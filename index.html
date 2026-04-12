@@ -3,45 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>深夜书房 v2.0</title>
+    <title>深夜书房 - 资源公社旗下</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root { --tg-theme-bg-color: #0f172a; }
-        body { background: #0f172a; color: #f1f5f9; font-family: system-ui, sans-serif; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: space-around; padding: 20px; overflow: hidden; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 40px; }
+        body { background: radial-gradient(circle at top right, #1e293b, #0f172a); color: #f1f5f9; font-family: system-ui, -apple-system, sans-serif; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: space-around; padding: 20px; overflow: hidden; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); border-radius: 30px; }
         .playing-ani { animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.05); opacity: 0.8; } 100% { transform: scale(1); opacity: 0.5; } }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.4; } 50% { transform: scale(1.1); opacity: 0.8; } 100% { transform: scale(1); opacity: 0.4; } }
     </style>
 </head>
 <body>
 
     <div class="text-center">
-        <h1 class="text-2xl font-extralight tracking-[0.3em] mb-1">深夜书房</h1>
-        <p class="text-[10px] text-blue-400 opacity-50 tracking-[0.5em]">MIDNIGHT CABIN</p>
+        <p class="text-blue-400 text-[9px] font-bold tracking-[0.4em] uppercase opacity-60 mb-1">Resource Commune Presents</p>
+        <h1 class="text-3xl font-extralight tracking-[0.2em] text-white">深夜书房</h1>
+        <div class="h-[1px] w-12 bg-blue-500/30 mx-auto mt-4"></div>
     </div>
 
-    <div class="w-full max-w-[320px] glass p-10 text-center relative">
-        <div id="disk-bg" class="w-32 h-32 mx-auto rounded-full border-2 border-white/5 mb-8 flex items-center justify-center">
-            <div id="dot" class="w-4 h-4 bg-blue-500/30 rounded-full"></div>
+    <div class="w-full max-w-[340px] glass p-10 text-center relative">
+        <div id="disk-bg" class="w-24 h-24 mx-auto rounded-full border border-white/10 mb-8 flex items-center justify-center">
+            <div id="dot" class="w-3 h-3 bg-blue-400 rounded-full shadow-[0_0_15px_rgba(96,165,250,0.6)]"></div>
         </div>
         
-        <p id="quote" class="text-sm text-gray-300 font-light leading-relaxed min-h-[60px] mb-6 flex items-center justify-center italic"></p>
+        <p id="quote" class="text-[13px] text-gray-300 font-light leading-relaxed min-h-[60px] mb-8 flex items-center justify-center italic px-4"></p>
 
-        <audio id="player" preload="auto"></audio>
+        <audio id="player" preload="auto" loop></audio>
 
         <div class="flex flex-col items-center gap-6">
-            <button onclick="togglePlay()" class="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center active:scale-95 transition-all">
+            <button onclick="togglePlay()" class="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center active:scale-90 transition-all">
                 <span id="p-icon" class="text-white text-xl">▶</span>
             </button>
-            <button onclick="change()" class="text-[11px] text-blue-400/60 border-b border-blue-400/20 pb-1 tracking-[0.2em]">🌓 换一场心境</button>
+            <button onclick="change()" class="text-[10px] text-blue-400/60 border-b border-blue-400/20 pb-1 tracking-[0.2em]">🌓 换一个心境</button>
         </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-4 w-full max-w-[320px]">
-        <button onclick="tg.openTelegramLink('https://t.me/cnudo')" class="py-3 glass text-[10px] text-gray-400">索引站</button>
-        <button onclick="tg.openTelegramLink('https://t.me/cxsns')" class="py-3 glass text-[10px] text-gray-400">软件站</button>
+    <div class="grid grid-cols-2 gap-3 w-full max-w-[340px]">
+        <button onclick="tg.openTelegramLink('https://t.me/cnudo')" class="py-3.5 glass text-[11px] text-blue-300 font-bold">🔍 索引站</button>
+        <button onclick="tg.openTelegramLink('https://t.me/cxsns')" class="py-3.5 glass text-[11px] text-white font-bold">🕹️ 软件站</button>
+        <button onclick="tg.openTelegramLink('https://t.me/sosotune')" class="py-3.5 glass text-[11px] text-emerald-400 font-bold">🎵 音乐库</button>
+        <button onclick="tg.openTelegramLink('https://t.me/soso_Group')" class="py-3.5 glass text-[11px] text-slate-400 font-bold">💬 交流群</button>
     </div>
+
+    <footer class="text-center">
+        <p class="text-[8px] tracking-[0.3em] opacity-20 uppercase">资源公社 · 官方动态中心 · @MR518</p>
+    </footer>
 
     <script>
         const tg = window.Telegram.WebApp;
@@ -53,12 +60,13 @@
         const quote = document.getElementById('quote');
         const disk = document.getElementById('disk-bg');
 
-        // 核心优化：使用稳定、轻量的 mp3 预览直链
+        // 精选雅致音乐直链（钢琴、大提琴、舒缓曲目）
         const playlist = [
             { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3", txt: "“心静，则万物皆安。”" },
             { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", txt: "“在琴声里，找回那个安静的自己。”" },
             { src: "https://p.scdn.co/mp3-preview/2d88a9134a6e4e0828f64582f3a4794121544f86", txt: "“万籁俱寂，唯余书香与弦音。”" },
-            { src: "https://p.scdn.co/mp3-preview/5567b54a8830722359b3506a7263b6a957297e2c", txt: "“此时此刻，世界与你无关。”" }
+            { src: "https://p.scdn.co/mp3-preview/5567b54a8830722359b3506a7263b6a957297e2c", txt: "“此时此刻，世界与你无关。”" },
+            { src: "https://p.scdn.co/mp3-preview/4822d3401b44991f868078044733e8a36c84c6a9", txt: "“最好的状态，是眼里有故事，脸上有从容。”" }
         ];
 
         function change() {
@@ -80,6 +88,7 @@
             else { audio.pause(); icon.innerText = "▶"; disk.classList.remove('playing-ani'); }
         }
 
+        // 初始化
         window.onload = change;
     </script>
 </body>
