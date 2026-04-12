@@ -3,115 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>深夜书房 - 资源公社</title>
+    <title>深夜书房 v2.0</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { --tg-theme-bg-color: #0f172a; --accent: #38bdf8; }
-        body { background: radial-gradient(circle at top right, #1e293b, #0f172a); color: #f1f5f9; font-family: system-ui, -apple-system, sans-serif; overflow: hidden; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 2rem 1.5rem; }
-        .glass-card { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
-        .audio-wave { display: flex; align-items: flex-end; gap: 3px; height: 18px; }
-        .wave-bar { width: 3px; background: var(--accent); border-radius: 99px; animation: wave 1s ease-in-out infinite; opacity: 0.6; }
-        @keyframes wave { 0%, 100% { height: 4px; } 50% { height: 100%; } }
-        .wave-bar:nth-child(2) { animation-delay: 0.1s; }
-        .wave-bar:nth-child(3) { animation-delay: 0.2s; }
-        .marquee { overflow: hidden; white-space: nowrap; background: rgba(56, 189, 248, 0.1); border-radius: 99px; padding: 6px 0; width: 100%; max-width: 340px; }
-        .marquee p { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; font-size: 11px; color: #38bdf8; }
-        @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
-        .btn-main { background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .btn-sub { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); font-size: 11px; }
+        :root { --tg-theme-bg-color: #0f172a; }
+        body { background: #0f172a; color: #f1f5f9; font-family: system-ui, sans-serif; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: space-around; padding: 20px; overflow: hidden; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 40px; }
+        .playing-ani { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.05); opacity: 0.8; } 100% { transform: scale(1); opacity: 0.5; } }
     </style>
 </head>
 <body>
 
-    <div class="marquee mb-2">
-        <p>🚀 [资源公社] 软件站：@cxsns | 索引站：@cnudo | 搜索群：@soso_Group | 音乐库：@sosotune | 商务：@MR518</p>
+    <div class="text-center">
+        <h1 class="text-2xl font-extralight tracking-[0.3em] mb-1">深夜书房</h1>
+        <p class="text-[10px] text-blue-400 opacity-50 tracking-[0.5em]">MIDNIGHT CABIN</p>
     </div>
 
-    <header class="text-center">
-        <div class="flex flex-col items-center gap-2">
-            <div class="audio-wave mb-1">
-                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-            </div>
-            <p id="greeting" class="text-blue-400 text-[9px] font-bold tracking-[0.3em] uppercase opacity-70"></p>
-            <h1 class="text-3xl font-black tracking-[0.15em] text-white italic">深夜书房</h1>
+    <div class="w-full max-w-[320px] glass p-10 text-center relative">
+        <div id="disk-bg" class="w-32 h-32 mx-auto rounded-full border-2 border-white/5 mb-8 flex items-center justify-center">
+            <div id="dot" class="w-4 h-4 bg-blue-500/30 rounded-full"></div>
         </div>
-    </header>
+        
+        <p id="quote" class="text-sm text-gray-300 font-light leading-relaxed min-h-[60px] mb-6 flex items-center justify-center italic"></p>
 
-    <main class="w-full max-w-sm glass-card rounded-[2.5rem] p-6 text-center">
-        <div id="player-container" class="rounded-2xl overflow-hidden bg-black/40 aspect-video flex items-center justify-center border border-white/5 mb-6 relative">
-            <div id="loader" class="text-blue-400 text-xs flex flex-col items-center gap-3">
-                <div class="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                <span class="opacity-40 tracking-widest uppercase">Connecting Atmosphere</span>
-            </div>
-            <iframe id="sc-iframe" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="" class="hidden"></iframe>
+        <audio id="player" preload="auto"></audio>
+
+        <div class="flex flex-col items-center gap-6">
+            <button onclick="togglePlay()" class="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center active:scale-95 transition-all">
+                <span id="p-icon" class="text-white text-xl">▶</span>
+            </button>
+            <button onclick="change()" class="text-[11px] text-blue-400/60 border-b border-blue-400/20 pb-1 tracking-[0.2em]">🌓 换一场心境</button>
         </div>
+    </div>
 
-        <div class="bg-blue-500/5 rounded-2xl p-5 mb-6 border border-blue-500/10 min-h-[90px] flex items-center justify-center">
-            <p id="quote-text" class="text-[12px] text-gray-300 italic leading-relaxed px-2"></p>
-        </div>
-
-        <button onclick="refreshMusic()" class="btn-main w-full py-4 rounded-2xl font-bold text-white text-sm mb-5 active:scale-95 shadow-lg shadow-blue-500/20">
-            🌓 换一场氛围
-        </button>
-
-        <div class="grid grid-cols-2 gap-3 mb-6">
-            <button onclick="tg.openTelegramLink('https://t.me/cnudo')" class="btn-sub py-3.5 rounded-xl text-blue-400 font-bold">🔍 索引站</button>
-            <button onclick="tg.openTelegramLink('https://t.me/cxsns')" class="btn-sub py-3.5 rounded-xl text-white font-bold">🕹️ 软件站</button>
-            <button onclick="tg.openTelegramLink('https://t.me/sosotune')" class="btn-sub py-3.5 rounded-xl text-blue-300 font-bold">🎵 音乐库</button>
-            <button onclick="tg.openTelegramLink('https://t.me/soso_Group')" class="btn-sub py-3.5 rounded-xl text-emerald-400 font-bold">💬 搜索群</button>
-        </div>
-
-        <button onclick="shareApp()" class="text-[10px] text-gray-500 hover:text-blue-400 font-medium transition-colors tracking-wide">
-            🔗 安利给好友 · 传播这份宁静
-        </button>
-    </main>
-
-    <footer class="text-center opacity-30 text-[9px] tracking-[0.2em] font-bold uppercase">
-        Resource Commune · @MR518
-    </footer>
+    <div class="grid grid-cols-2 gap-4 w-full max-w-[320px]">
+        <button onclick="tg.openTelegramLink('https://t.me/cnudo')" class="py-3 glass text-[10px] text-gray-400">索引站</button>
+        <button onclick="tg.openTelegramLink('https://t.me/cxsns')" class="py-3 glass text-[10px] text-gray-400">软件站</button>
+    </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-        tg.setHeaderColor('#0f172a');
 
-        const quotes = ["“音乐是灵魂的避难所，软件是效率的加速器。”","“在字里行间，寻找与这个世界和解的方式。”","“有些旋律，光是响起就已经带回了所有的思念。”","“世界很喧嚣，但这里的深夜很安静。”","“愿你熬过的每一个夜晚，都有温柔的旋律相伴。”","“最好的状态，是眼里有故事，脸上有从容。”","“哪怕只有一个人听，音乐也有它存在的意义。”","“在纯净的代码里，寻找属于效率的极致浪漫。”","“所谓自由，不是随心所欲，而是有拒绝的底气。”"];
-        const library = ["1038590392", "841916329", "276785642", "1140024976", "545722335", "973410706", "305459341", "1282144342", "763484500", "254516752", "893452110", "1102345678", "998877665", "445566778", "223344556", "778899001", "334455667", "556677889", "889900112", "1356789123"];
+        const audio = document.getElementById('player');
+        const icon = document.getElementById('p-icon');
+        const quote = document.getElementById('quote');
+        const disk = document.getElementById('disk-bg');
 
-        function updateGreeting() {
-            const hour = new Date().getHours();
-            let greet = "Midnight Oasis";
-            if (hour >= 5 && hour < 11) greet = "清晨 · 唤醒灵感";
-            else if (hour >= 11 && hour < 17) greet = "午后 · 效率时光";
-            else if (hour >= 17 && hour < 22) greet = "傍晚 · 释放压力";
-            else greet = "深夜 · 灵魂避难所";
-            document.getElementById('greeting').innerText = greet;
+        // 核心优化：使用稳定、轻量的 mp3 预览直链
+        const playlist = [
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3", txt: "“心静，则万物皆安。”" },
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", txt: "“在琴声里，找回那个安静的自己。”" },
+            { src: "https://p.scdn.co/mp3-preview/2d88a9134a6e4e0828f64582f3a4794121544f86", txt: "“万籁俱寂，唯余书香与弦音。”" },
+            { src: "https://p.scdn.co/mp3-preview/5567b54a8830722359b3506a7263b6a957297e2c", txt: "“此时此刻，世界与你无关。”" }
+        ];
+
+        function change() {
+            const track = playlist[Math.floor(Math.random() * playlist.length)];
+            audio.src = track.src;
+            quote.innerText = track.txt;
+            audio.play().then(() => {
+                icon.innerText = "⏸";
+                disk.classList.add('playing-ani');
+            }).catch(() => {
+                icon.innerText = "▶";
+                disk.classList.remove('playing-ani');
+            });
+            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
         }
 
-        function refreshMusic() {
-            const loader = document.getElementById('loader');
-            const iframe = document.getElementById('sc-iframe');
-            const qText = document.getElementById('quote-text');
-            const trackID = library[Math.floor(Math.random() * library.length)];
-            const quote = quotes[Math.floor(Math.random() * quotes.length)];
-            iframe.src = `https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${trackID}&color=%2338bdf8&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false`;
-            qText.innerText = quote;
-            loader.classList.remove('hidden');
-            iframe.classList.add('hidden');
-            iframe.onload = () => { loader.classList.add('hidden'); iframe.classList.remove('hidden'); };
-            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+        function togglePlay() {
+            if (audio.paused) { audio.play(); icon.innerText = "⏸"; disk.classList.add('playing-ani'); } 
+            else { audio.pause(); icon.innerText = "▶"; disk.classList.remove('playing-ani'); }
         }
 
-        function shareApp() {
-            const shareText = "🌙 发现一个超棒的深夜氛围播放器，来自 [资源公社]。";
-            const shareUrl = "https://t.me/cxsns_bot/study"; 
-            tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`);
-        }
-
-        updateGreeting();
-        window.onload = refreshMusic;
+        window.onload = change;
     </script>
 </body>
 </html>
