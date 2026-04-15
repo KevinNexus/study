@@ -119,7 +119,16 @@
         .track-item:hover { background: rgba(99,102,241,0.1); }
         .track-item.active { color: #818cf8; font-weight: 600; }
 
-        button:focus-visible, .vol-slider:focus-visible { outline: 2px solid #6366f1; outline-offset: 2px; }
+        .custom-input {
+            width: 100%; padding: 10px 14px; border-radius: 12px;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text); font-size: 13px; outline: none; margin-top: 10px;
+            transition: border-color 0.2s;
+        }
+        .custom-input:focus { border-color: #6366f1; }
+        .custom-input::placeholder { color: #64748b; }
+
+        button:focus-visible, input:focus-visible { outline: 2px solid #6366f1; outline-offset: 2px; }
         ::-webkit-scrollbar { width: 0; height: 0; }
 
         @media (max-width: 380px) {
@@ -144,7 +153,7 @@
         <div id="vinyl" class="vinyl mx-auto mb-4"></div>
         <blockquote id="quote" class="text-[14px] text-gray-300 font-light leading-relaxed min-h-[48px] mb-3 flex items-center justify-center italic px-2" aria-live="polite">轻触播放，进入梦乡</blockquote>
         
-        <audio id="player" preload="metadata" loop crossorigin="anonymous"></audio>
+        <audio id="player" preload="auto" loop crossorigin="anonymous" playsinline></audio>
 
         <div class="progress-ring">
             <svg width="120" height="120">
@@ -179,7 +188,9 @@
                 <button class="timer-btn" onclick="setSleepTimer(60)">60分</button>
                 <button class="timer-btn" onclick="toggleTrackList()">🎵 曲目</button>
             </div>
-            <button id="retryBtn" class="text-[11px] text-primary-400 border-b border-primary-400/30 pb-0.5 tracking-wider hidden" onclick="retryPlay()">🔄 重新尝试</button>
+            
+            <!-- 自定义音源输入框（解决国内网络问题） -->
+            <input type="text" id="customUrl" class="custom-input" placeholder="🔗 粘贴你的MP3链接（回车试听）">
         </div>
 
         <div class="track-list" id="trackList"></div>
@@ -206,20 +217,24 @@
     </div>
 
     <script>
-        // ================= 配置区：12首稳定音源（SoundHelix 官方测试库，永久免费/无防盗链） =================
+        // ================= 音源配置（三级容灾） =================
+        // 说明：国内网络限制严格，预设链接可能受限。强烈建议使用下方“自定义音源”输入框测试。
         const PLAYLIST = [
-            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", title: "夜曲一", quote: "“雨落山林，心归宁静。”" },
-            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", title: "夜曲二", quote: "“潮起潮落，烦恼随波而去。”" },
-            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", title: "夜曲三", quote: "“虫声织梦，夜色温柔。”" },
-            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3", title: "夜曲四", quote: "“琴键轻落，月光入怀。”" },
-            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3", title: "夜曲五", quote: "“仰望星空，万物皆安。”" },
-            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3", title: "夜曲六", quote: "“风过铃响，心自澄明。”" },
-            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3", title: "夜曲七", quote: "“在琴声里，找回安静的自己。”" },
-            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3", title: "夜曲八", quote: "“万物苏醒前，世界属于你。”" },
-            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3", title: "夜曲九", quote: "“山风拂过，带走所有疲惫。”" },
-            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3", title: "夜曲十", quote: "“火光微温，岁月静好。”" },
-            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3", title: "夜曲十一", quote: "“一叶扁舟，心向远方。”" },
-            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3", title: "夜曲十二", quote: "“落雪无痕，心如明镜。”" }
+            { title: "夜曲一", quote: "“雨落山林，心归宁静。”", 
+              src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+              fallback: "https://actions.google.com/sounds/v1/ambiences/rain_heavy_loud.ogg" },
+            { title: "夜曲二", quote: "“潮起潮落，烦恼随波而去。”", 
+              src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+              fallback: "https://actions.google.com/sounds/v1/ambiences/ocean_waves.ogg" },
+            { title: "夜曲三", quote: "“虫声织梦，夜色温柔。”", 
+              src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+              fallback: "https://actions.google.com/sounds/v1/ambiences/forest_crickets.ogg" },
+            { title: "夜曲四", quote: "“琴键轻落，月光入怀。”", 
+              src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+              fallback: "https://www.w3schools.com/html/horse.mp3" },
+            { title: "夜曲五", quote: "“仰望星空，万物皆安。”", 
+              src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
+              fallback: "https://actions.google.com/sounds/v1/ambiences/quiet_library.ogg" }
         ];
 
         // ================= 核心变量 =================
@@ -237,7 +252,7 @@
         const volumeSlider = document.getElementById('volumeSlider');
         const statusMsg = document.getElementById('statusMsg');
         const trackListEl = document.getElementById('trackList');
-        const retryBtn = document.getElementById('retryBtn');
+        const customUrlInput = document.getElementById('customUrl');
         const circumference = 2 * Math.PI * 54;
 
         let currentIdx = -1, isPlaying = false, sleepTimerId = null, deferredPrompt = null, failStreak = 0;
@@ -254,20 +269,19 @@
             starfield.appendChild(star);
         }
 
-        // ================= 音频引擎（修复版） =================
+        // ================= 音频引擎（国内优化版） =================
         function formatTime(sec) {
             if (isNaN(sec)) return '0:00';
             const m = Math.floor(sec / 60), s = Math.floor(sec % 60);
             return `${m}:${s.toString().padStart(2, '0')}`;
         }
 
-        function loadTrack(index, autoPlay = false) {
-            if (index < 0 || index >= PLAYLIST.length) return;
-            currentIdx = index;
-            const track = PLAYLIST[index];
+        function loadTrack(index, autoPlay = false, forceUrl = null) {
+            const track = forceUrl ? { title: "自定义音源", quote: "自定义音乐", src: forceUrl, fallback: null } : PLAYLIST[index];
+            if (!track) return;
             
-            failStreak = 0; // 加载新轨道时重置失败计数
-            retryBtn.classList.add('hidden');
+            currentIdx = forceUrl ? -1 : index;
+            failStreak = 0;
             showStatus(`⏳ 缓冲: ${track.title}`);
             
             audio.src = track.src;
@@ -276,21 +290,39 @@
             document.title = `🌙 ${track.title} - 深夜书房`;
             updateTrackListUI();
 
-            if (autoPlay) {
-                audio.play().then(() => {
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
                     updatePlayState(true);
                     showStatus('🎵 播放中', 'success');
                     if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
                 }).catch(err => {
-                    console.warn('Autoplay blocked:', err.name);
+                    console.warn('播放拦截:', err.name);
                     showStatus('👆 请点击播放按钮', 'error');
                     updatePlayState(false);
                 });
             }
         }
 
+        function tryFallback() {
+            const track = PLAYLIST[currentIdx];
+            if (track && track.fallback) {
+                showStatus('🔄 主源失败，切换备用CDN...');
+                audio.src = track.fallback;
+                audio.play().then(() => {
+                    updatePlayState(true);
+                    showStatus('✅ 备用源播放成功', 'success');
+                }).catch(() => {
+                    showStatus('🚫 音源加载失败，请使用自定义链接', 'error');
+                    updatePlayState(false);
+                });
+            } else {
+                showStatus('🚫 音源不可用，请粘贴有效MP3链接', 'error');
+            }
+        }
+
         function togglePlay() {
-            if (!audio.src) { loadTrack(0, true); return; }
+            if (!audio.src || audio.src === location.href) { loadTrack(0, true); return; }
             if (audio.paused) {
                 audio.play().then(() => {
                     updatePlayState(true);
@@ -304,8 +336,14 @@
             }
         }
 
-        function nextTrack() { loadTrack((currentIdx + 1) % PLAYLIST.length, true); }
-        function prevTrack() { loadTrack((currentIdx - 1 + PLAYLIST.length) % PLAYLIST.length, true); }
+        function nextTrack() { 
+            const next = (currentIdx + 1) % PLAYLIST.length;
+            loadTrack(next, true); 
+        }
+        function prevTrack() { 
+            const prev = (currentIdx - 1 + PLAYLIST.length) % PLAYLIST.length;
+            loadTrack(prev, true); 
+        }
 
         function updatePlayState(playing) {
             isPlaying = playing;
@@ -320,11 +358,6 @@
             if (type) setTimeout(() => { if (statusMsg.textContent === msg) { statusMsg.textContent = ''; statusMsg.className = 'status-msg'; } }, 3000);
         }
 
-        function retryPlay() {
-            showStatus('🔄 正在重试...');
-            loadTrack(currentIdx, true);
-        }
-
         // ================= 进度 & 音量 & 错误处理 =================
         audio.addEventListener('timeupdate', () => {
             if (!audio.duration) return;
@@ -335,16 +368,13 @@
         audio.addEventListener('loadedmetadata', () => durationEl.textContent = `/ ${formatTime(audio.duration)}`);
         audio.addEventListener('ended', () => { failStreak = 0; nextTrack(); });
         
-        // 核心修复：直接监听 audio 元素错误，替代 fetch 预检
-        audio.addEventListener('error', (e) => {
-            console.error('Audio load failed:', e);
+        // 核心：监听音频加载失败，自动尝试备用源或提示自定义
+        audio.addEventListener('error', () => {
             failStreak++;
-            if (failStreak < 3) {
-                showStatus(`⚠️ 音源加载失败，自动跳过 (${failStreak}/3)`, 'error');
-                setTimeout(nextTrack, 1500);
+            if (failStreak === 1) {
+                tryFallback();
             } else {
-                showStatus('🚫 连续加载失败，请检查网络', 'error');
-                retryBtn.classList.remove('hidden');
+                showStatus('⚠️ 网络或音源限制，请使用下方自定义输入框', 'error');
                 updatePlayState(false);
             }
         });
@@ -361,12 +391,24 @@
             audio.currentTime = pct * audio.duration;
         });
 
+        // ================= 自定义音源（回车触发） =================
+        customUrlInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const url = customUrlInput.value.trim();
+                if (url.match(/^https?:\/\/.+\.(mp3|wav|ogg|m4a)(\?.*)?$/i)) {
+                    loadTrack(0, true, url);
+                    showStatus('✅ 已加载自定义音源', 'success');
+                } else {
+                    showStatus('❌ 请输入有效的MP3/WAV/OGG链接', 'error');
+                }
+            }
+        });
+
         // ================= 睡眠定时器 =================
         function setSleepTimer(min) {
             clearTimeout(sleepTimerId);
             document.querySelectorAll('.timer-btn').forEach(b => b.classList.remove('active'));
             if (min === 0) { showStatus('⏰ 定时已取消'); return; }
-            
             event.target.classList.add('active');
             showStatus(`⏰ ${min}分钟后自动暂停`);
             sleepTimerId = setTimeout(() => {
@@ -417,7 +459,7 @@
         document.getElementById('dismissInstall')?.addEventListener('click', () => document.getElementById('installPrompt').classList.add('translate-y-24'));
 
         if ('serviceWorker' in navigator && location.protocol === 'https:') {
-            const sw = `const C='mid-v3';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['/'])).then(()=>self.skipWaiting())));self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(n=>Promise.all(n.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim())));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{const c=res.clone();caches.open(C).then(cache=>cache.put(e.request,c));return res}).catch(()=>caches.match('/')))));`;
+            const sw = `const C='mid-v4';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['/'])).then(()=>self.skipWaiting())));self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(n=>Promise.all(n.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim())));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{const c=res.clone();caches.open(C).then(cache=>cache.put(e.request,c));return res}).catch(()=>caches.match('/')))));`;
             navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw], {type:'application/javascript'})))
                 .then(() => console.log('✅ 离线缓存已启用')).catch(console.warn);
         }
@@ -432,8 +474,10 @@
         const savedVol = localStorage.getItem('midnight-vol');
         if (savedVol) { volumeSlider.value = savedVol; audio.volume = parseFloat(savedVol); }
 
-        // 页面加载后直接准备第一首（不自动播放，符合浏览器规范）
-        window.addEventListener('load', () => loadTrack(0));
+        // 页面加载后准备就绪（不自动播放，符合现代浏览器规范）
+        window.addEventListener('load', () => {
+            showStatus('💡 提示：国内网络建议使用下方“自定义音源”粘贴MP3链接');
+        });
     </script>
 </body>
 </html>
