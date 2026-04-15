@@ -11,7 +11,7 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { primary: { 400: '#818cf8', 500: '#6366f1' } },
+                    colors: { primary: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5' } },
                     animation: { 'float': 'float 6s ease-in-out infinite' }
                 }
             }
@@ -33,37 +33,50 @@
         .glass {
             background: var(--surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255,255,255,0.1); border-radius: 28px; box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+            width: 100%; max-width: 360px; padding: 24px 20px;
         }
         .vinyl {
-            width: 100px; height: 100px; border-radius: 50%;
+            width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 16px;
             background: radial-gradient(circle, #111 20%, #222 21%, #111 22%, #222 35%, #111 36%, #222 55%, #111 56%);
             border: 3px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center;
             position: relative; transition: transform 0.3s;
         }
-        .vinyl.playing { animation: spin 20s linear infinite; box-shadow: 0 0 30px rgba(99,102,241,0.4); }
+        .vinyl.playing { animation: spin 18s linear infinite; box-shadow: 0 0 30px rgba(99,102,241,0.4); }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .vinyl::after { content: '🌙'; position: absolute; font-size: 24px; }
 
         .play-btn {
-            width: 64px; height: 64px; border-radius: 50%;
+            width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 16px;
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            border: none; color: white; font-size: 24px; cursor: pointer;
+            border: none; color: white; font-size: 22px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 4px 15px rgba(99,102,241,0.4); transition: transform 0.2s;
         }
         .play-btn:active { transform: scale(0.95); }
 
-        .progress-ring { width: 110px; height: 110px; position: relative; margin: 0 auto 10px; }
-        .progress-ring svg { transform: rotate(-90deg); }
-        .progress-ring circle { fill: none; stroke-width: 4; }
-        .progress-ring .bg { stroke: rgba(255,255,255,0.1); }
-        .progress-ring .bar { stroke: #6366f1; stroke-linecap: round; transition: stroke-dashoffset 0.1s linear; }
-        .progress-time { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .progress-time span { font-size: 16px; font-weight: 600; }
-        .progress-time small { font-size: 10px; opacity: 0.6; }
-
-        .vol-slider { width: 100%; height: 4px; -webkit-appearance: none; background: rgba(255,255,255,0.15); border-radius: 2px; outline: none; }
+        .vol-row { display: flex; align-items: center; gap: 10px; max-width: 200px; margin: 0 auto 16px; }
+        .vol-slider { flex: 1; height: 4px; -webkit-appearance: none; background: rgba(255,255,255,0.15); border-radius: 2px; outline: none; }
         .vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #6366f1; cursor: pointer; }
+
+        .modes { display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
+        .mode-btn {
+            padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; cursor: pointer; transition: all 0.2s;
+        }
+        .mode-btn.active { background: #6366f1; color: white; border-color: #6366f1; }
+
+        .timer-box {
+            background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px; padding: 12px; margin-top: 8px;
+        }
+        .timer-display { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 1px; margin-bottom: 8px; }
+        .timer-controls { display: flex; gap: 8px; justify-content: center; }
+        .timer-btn {
+            padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 600;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; cursor: pointer;
+        }
+        .timer-btn:hover { background: rgba(99,102,241,0.2); }
+        .timer-btn.active { background: #6366f1; color: white; border-color: #6366f1; }
 
         .nav-btn {
             padding: 12px 8px; border-radius: 14px; font-size: 11px; font-weight: 600;
@@ -71,14 +84,10 @@
             transition: all 0.2s; backdrop-filter: blur(8px);
         }
         .nav-btn:hover { background: rgba(99,102,241,0.15); transform: translateY(-2px); }
-
-        .mode-btn {
-            padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; cursor: pointer;
-        }
-        .mode-btn.active { background: #6366f1; color: white; border-color: #6366f1; }
         
+        .quote { text-align: center; font-size: 13px; color: #94a3b8; font-style: italic; min-height: 36px; margin-bottom: 12px; }
         ::-webkit-scrollbar { width: 0; }
+        @media (max-width: 380px) { .glass { padding: 20px 16px; } .vinyl { width: 85px; height: 85px; } }
     </style>
 </head>
 <body>
@@ -91,38 +100,36 @@
         </h1>
     </header>
 
-    <main class="w-full max-w-[340px] glass p-6 text-center relative">
-        <div id="vinyl" class="vinyl mx-auto mb-4"></div>
-        <p id="quote" class="text-[13px] text-gray-300 font-light italic mb-4 min-h-[40px]">轻触播放，进入梦乡</p>
+    <main class="glass">
+        <div id="vinyl" class="vinyl"></div>
+        <p id="quote" class="quote">轻触播放，进入梦乡</p>
         
-        <div class="progress-ring">
-            <svg width="110" height="110">
-                <circle class="bg" cx="55" cy="55" r="50"></circle>
-                <circle class="bar" id="progressBar" cx="55" cy="55" r="50" stroke-dasharray="314.16" stroke-dashoffset="314.16"></circle>
-            </svg>
-            <div class="progress-time">
-                <span id="timeDisplay">0:00</span>
-                <small>循环播放中</small>
-            </div>
-        </div>
+        <button id="playBtn" class="play-btn">▶</button>
 
-        <button id="playBtn" class="play-btn mx-auto mb-4">▶</button>
-
-        <div class="flex items-center gap-3 w-full max-w-[200px] mx-auto mb-4">
+        <div class="vol-row">
             <span class="text-xs text-gray-400">🔊</span>
             <input type="range" class="vol-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.6">
         </div>
 
-        <div class="flex gap-2 justify-center mb-2">
-            <button class="mode-btn active" onclick="setMode('brown')">🌧️ 暴雨白噪</button>
-            <button class="mode-btn" onclick="setMode('deep')">🌌 深沉低频</button>
-            <button class="mode-btn" onclick="setMode('wind')">🍃 森林微风</button>
+        <div class="modes">
+            <button class="mode-btn active" onclick="setMode('piano')">🎹 钢琴</button>
+            <button class="mode-btn" onclick="setMode('guzheng')">🎵 古筝</button>
+            <button class="mode-btn" onclick="setMode('violin')">🎻 小提琴</button>
+            <button class="mode-btn" onclick="setMode('rain')">🌧️ 雨声</button>
         </div>
-        <p id="statusText" class="text-[11px] text-gray-500 mt-2">已就绪</p>
+
+        <div class="timer-box">
+            <div class="timer-display" id="timerDisplay">00:00</div>
+            <div class="timer-controls">
+                <button class="timer-btn" onclick="setTimer(15)">15分</button>
+                <button class="timer-btn" onclick="setTimer(30)">30分</button>
+                <button class="timer-btn" onclick="setTimer(60)">60分</button>
+                <button class="timer-btn" id="timerStopBtn" onclick="stopTimer()">停止</button>
+            </div>
+        </div>
     </main>
 
-    <!-- 恢复你原来的 4 个跳转按钮 -->
-    <nav class="grid grid-cols-2 gap-3 w-full max-w-[340px]">
+    <nav class="grid grid-cols-2 gap-3 w-full max-w-[360px] mt-4">
         <button onclick="openTG('https://t.me/cnudo')" class="nav-btn text-primary-400">🔍 索引站</button>
         <button onclick="openTG('https://t.me/cxsns')" class="nav-btn text-white">🕹️ 软件站</button>
         <button onclick="openTG('https://t.me/sosotune')" class="nav-btn text-emerald-400">🎵 音乐库</button>
@@ -134,117 +141,195 @@
     </footer>
 
     <script>
-        // 1. Telegram 环境适配
+        // 1. Telegram 适配
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.ready(); tg.expand?.(); }
 
-        // 2. 核心音频引擎 (浏览器原生算法生成，不依赖任何外部链接)
-        let audioCtx, noiseSource, gainNode, filterNode;
-        let isPlaying = false, startTime = 0, timerInterval = null;
-        let currentMode = 'brown';
+        // 2. 音频引擎核心
+        let ctx, masterGain, delayNode, feedbackGain;
+        let isPlaying = false, currentMode = 'piano';
+        let timerSeconds = 0, timerInterval = null;
+        let scheduleTimer = null;
+        let nextNoteTime = 0;
+        let noteQueue = [];
 
-        const modes = {
-            brown: { freq: 600, type: 'lowpass', quote: '“雨落山林，心归宁静。”' },
-            deep: { freq: 250, type: 'lowpass', quote: '“深沉白噪，隔绝尘世。”' },
-            wind: { freq: 800, type: 'bandpass', quote: '“微风拂面，林间漫步。”' }
+        const scales = {
+            piano: [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25], // C4 大调五声
+            guzheng: [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25],
+            violin: [261.63, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25, 783.99],
+            rain: []
+        };
+
+        const quotes = {
+            piano: "“琴键轻落，月光入怀。”",
+            guzheng: "“弦音如水，心自澄明。”",
+            violin: "“悠扬旋律，抚平疲惫。”",
+            rain: "“雨落山林，心归宁静。”"
         };
 
         function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (!ctx) {
+                ctx = new (window.AudioContext || window.webkitAudioContext)();
+                masterGain = ctx.createGain();
+                masterGain.gain.value = 0.6;
+
+                // 创建环境混响/延迟效果
+                delayNode = ctx.createDelay();
+                delayNode.delayTime.value = 0.4;
+                feedbackGain = ctx.createGain();
+                feedbackGain.gain.value = 0.5;
+
+                masterGain.connect(ctx.destination);
+                masterGain.connect(delayNode);
+                delayNode.connect(feedbackGain);
+                feedbackGain.connect(delayNode);
+                feedbackGain.connect(ctx.destination);
             }
-            // 核心修复：严格遵循浏览器策略，用户点击后才恢复上下文
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+            if (ctx.state === 'suspended') ctx.resume();
         }
 
-        function createNoiseBuffer() {
-            const bufferSize = audioCtx.sampleRate * 2;
-            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        function playNote(freq, time, duration, type) {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            const filter = ctx.createBiquadFilter();
+
+            osc.type = type;
+            osc.frequency.value = freq;
+
+            filter.type = 'lowpass';
+            filter.frequency.value = type === 'violin' ? 2000 : 1200;
+            filter.Q.value = 1;
+
+            // 包络控制
+            gain.gain.setValueAtTime(0, time);
+            gain.gain.linearRampToValueAtTime(type === 'violin' ? 0.3 : 0.5, time + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(masterGain);
+
+            osc.start(time);
+            osc.stop(time + duration + 0.1);
+        }
+
+        function playRain(time) {
+            // 简易雨声合成 (滤波白噪)
+            const bufferSize = ctx.sampleRate * 2;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
             const data = buffer.getChannelData(0);
             for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-            return buffer;
+
+            const src = ctx.createBufferSource();
+            src.buffer = buffer;
+            src.loop = true;
+
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 800;
+
+            const gain = ctx.createGain();
+            gain.gain.setValueAtTime(0.4, time);
+            
+            src.connect(filter);
+            filter.connect(gain);
+            gain.connect(masterGain);
+            src.start(time);
+            src.stop(time + 0.2); // 短片段循环触发
+            return src;
         }
 
-        function playAudio() {
+        function scheduler() {
+            while (nextNoteTime < ctx.currentTime + 0.1) {
+                if (currentMode === 'rain') {
+                    playRain(nextNoteTime);
+                    nextNoteTime += 0.1;
+                } else {
+                    const scale = scales[currentMode];
+                    const freq = scale[Math.floor(Math.random() * scale.length)];
+                    const type = currentMode === 'piano' ? 'triangle' : currentMode === 'guzheng' ? 'sine' : 'sawtooth';
+                    const duration = currentMode === 'violin' ? 1.5 + Math.random() : 0.8 + Math.random();
+                    playNote(freq, nextNoteTime, duration, type);
+                    nextNoteTime += currentMode === 'violin' ? 0.8 : 0.4;
+                }
+            }
+            scheduleTimer = setTimeout(scheduler, 25);
+        }
+
+        function togglePlay() {
             initAudio();
-            stopAudio(); // 清理旧节点
-
-            const source = audioCtx.createBufferSource();
-            source.buffer = createNoiseBuffer();
-            source.loop = true;
-            noiseSource = source;
-
-            filterNode = audioCtx.createBiquadFilter();
-            const cfg = modes[currentMode];
-            filterNode.type = cfg.type;
-            filterNode.frequency.value = cfg.freq;
-            if(currentMode === 'wind') filterNode.Q.value = 0.8;
-
-            gainNode = audioCtx.createGain();
-            gainNode.gain.value = parseFloat(document.getElementById('volumeSlider').value);
-
-            source.connect(filterNode);
-            filterNode.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            source.start();
-
-            isPlaying = true;
-            startTime = Date.now();
-            updateUI(true);
-            startTimer();
-            document.getElementById('quote').textContent = cfg.quote;
-            document.getElementById('statusText').textContent = '🎵 算法生成音景运行中';
-        }
-
-        function stopAudio() {
-            if (noiseSource) { try { noiseSource.stop(); } catch(e){} noiseSource = null; }
-            isPlaying = false;
-            updateUI(false);
-            stopTimer();
-            document.getElementById('statusText').textContent = '⏸ 已暂停';
-        }
-
-        function updateUI(playing) {
-            document.getElementById('playBtn').textContent = playing ? '⏸' : '▶';
-            document.getElementById('vinyl').classList.toggle('playing', playing);
+            if (isPlaying) {
+                isPlaying = false;
+                clearTimeout(scheduleTimer);
+                document.getElementById('playBtn').textContent = '▶';
+                document.getElementById('vinyl').classList.remove('playing');
+            } else {
+                isPlaying = true;
+                nextNoteTime = ctx.currentTime + 0.1;
+                scheduler();
+                document.getElementById('playBtn').textContent = '⏸';
+                document.getElementById('vinyl').classList.add('playing');
+            }
         }
 
         function setMode(mode) {
             currentMode = mode;
             document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
-            if (isPlaying) playAudio(); // 热切换
+            document.getElementById('quote').textContent = quotes[mode];
+            // 热切换时重启调度
+            if (isPlaying) {
+                clearTimeout(scheduleTimer);
+                nextNoteTime = ctx.currentTime + 0.05;
+                scheduler();
+            }
         }
 
-        // 3. 计时器与进度环
-        function startTimer() {
-            clearInterval(timerInterval);
+        function setTimer(mins) {
+            stopTimer();
+            timerSeconds = mins * 60;
+            updateTimerDisplay();
+            document.querySelectorAll('.timer-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
             timerInterval = setInterval(() => {
-                if (!isPlaying) return;
-                const sec = Math.floor((Date.now() - startTime) / 1000);
-                const m = Math.floor(sec / 60), s = sec % 60;
-                document.getElementById('timeDisplay').textContent = `${m}:${s.toString().padStart(2,'0')}`;
-                // 进度环模拟循环
-                const pct = (sec % 60) / 60;
-                document.getElementById('progressBar').style.strokeDashoffset = 314.16 - (pct * 314.16);
-            }, 500);
+                timerSeconds--;
+                updateTimerDisplay();
+                if (timerSeconds <= 0) {
+                    stopAll();
+                }
+            }, 1000);
         }
-        function stopTimer() { clearInterval(timerInterval); }
 
-        // 4. 事件绑定
-        document.getElementById('playBtn').addEventListener('click', () => isPlaying ? stopAudio() : playAudio());
-        document.getElementById('volumeSlider').addEventListener('input', (e) => {
-            if (gainNode) gainNode.gain.value = parseFloat(e.target.value);
-        });
+        function stopTimer() {
+            clearInterval(timerInterval);
+            document.querySelectorAll('.timer-btn').forEach(b => b.classList.remove('active'));
+            timerSeconds = 0;
+            updateTimerDisplay();
+        }
+
+        function stopAll() {
+            stopTimer();
+            if (isPlaying) togglePlay();
+        }
+
+        function updateTimerDisplay() {
+            const m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+            const s = (timerSeconds % 60).toString().padStart(2, '0');
+            document.getElementById('timerDisplay').textContent = timerSeconds > 0 ? `${m}:${s}` : '00:00';
+        }
 
         function openTG(url) {
             if (tg?.openTelegramLink) tg.openTelegramLink(url);
             else window.open(url, '_blank');
         }
 
-        // 5. 星空背景初始化
+        // 事件绑定
+        document.getElementById('playBtn').addEventListener('click', togglePlay);
+        document.getElementById('volumeSlider').addEventListener('input', (e) => {
+            if (masterGain) masterGain.gain.value = parseFloat(e.target.value);
+        });
+
+        // 星空背景
         const starfield = document.getElementById('starfield');
         for(let i=0; i<40; i++) {
             const s = document.createElement('div');
