@@ -12,7 +12,7 @@
             theme: {
                 extend: {
                     colors: { primary: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5' } },
-                    animation: { 'float': 'float 6s ease-in-out infinite' }
+                    animation: { 'float': 'float 6s ease-in-out infinite', 'fade-in': 'fadeIn 0.5s ease' }
                 }
             }
         }
@@ -23,17 +23,18 @@
             background: var(--bg); color: var(--text);
             font-family: system-ui, -apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif;
             height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-            padding: 16px; overflow: hidden; -webkit-tap-highlight-color: transparent;
+            padding: 16px; overflow: hidden; -webkit-tap-highlight-color: transparent; transition: all 0.4s ease;
         }
         .stars { position: fixed; inset: 0; pointer-events: none; z-index: -1; background: radial-gradient(ellipse at 50% 0%, #1e1b4b 0%, #0f172a 40%, #020617 100%); }
         .star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; animation: twinkle 4s infinite alternate; }
         @keyframes twinkle { 0% { opacity: 0.2; } 100% { opacity: 0.8; } }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         .glass {
             background: var(--surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255,255,255,0.1); border-radius: 28px; box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-            width: 100%; max-width: 360px; padding: 24px 20px;
+            width: 100%; max-width: 360px; padding: 24px 20px; transition: all 0.4s ease;
         }
         .vinyl {
             width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 16px;
@@ -43,7 +44,7 @@
         }
         .vinyl.playing { animation: spin 18s linear infinite; box-shadow: 0 0 30px rgba(99,102,241,0.4); }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .vinyl::after { content: '🌙'; position: absolute; font-size: 24px; }
+        .vinyl::after { content: ''; position: absolute; font-size: 24px; }
 
         .play-btn {
             width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 16px;
@@ -67,9 +68,9 @@
 
         .timer-box {
             background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px; padding: 12px; margin-top: 8px;
+            border-radius: 16px; padding: 12px; margin-top: 8px; transition: opacity 0.3s;
         }
-        .timer-display { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 1px; margin-bottom: 8px; }
+        .timer-display { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 1px; margin-bottom: 8px; text-align: center; }
         .timer-controls { display: flex; gap: 8px; justify-content: center; }
         .timer-btn {
             padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 600;
@@ -85,7 +86,33 @@
         }
         .nav-btn:hover { background: rgba(99,102,241,0.15); transform: translateY(-2px); }
         
-        .quote { text-align: center; font-size: 13px; color: #94a3b8; font-style: italic; min-height: 36px; margin-bottom: 12px; }
+        .quote { text-align: center; font-size: 14px; color: #cbd5e1; font-style: italic; min-height: 40px; margin-bottom: 8px; line-height: 1.6; }
+        .book-tag { font-size: 11px; color: #6366f1; text-align: center; margin-bottom: 12px; font-weight: 500; }
+        
+        .notes-area {
+            width: 100%; min-height: 60px; background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+            padding: 10px; color: #e2e8f0; font-size: 13px; resize: none; outline: none;
+            margin-top: 12px; transition: border-color 0.2s;
+        }
+        .notes-area:focus { border-color: #6366f1; }
+        .notes-area::placeholder { color: #64748b; }
+
+        .focus-toggle {
+            position: absolute; top: 16px; right: 16px;
+            background: rgba(255,255,255,0.1); border: none; color: #94a3b8;
+            padding: 6px 10px; border-radius: 8px; font-size: 11px; cursor: pointer;
+        }
+        .focus-toggle:hover { color: white; background: rgba(99,102,241,0.3); }
+
+        /* 沉浸模式样式 */
+        body.focus-mode { justify-content: center; }
+        body.focus-mode .stars { opacity: 0.3; }
+        body.focus-mode .glass { max-width: 100%; border-radius: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 40px 20px; }
+        body.focus-mode .nav-btn, body.focus-mode .timer-box, body.focus-mode .modes { display: none; }
+        body.focus-mode .vinyl { width: 120px; height: 120px; }
+        body.focus-mode .quote { font-size: 18px; margin: 20px 0; }
+        
         ::-webkit-scrollbar { width: 0; }
         @media (max-width: 380px) { .glass { padding: 20px 16px; } .vinyl { width: 85px; height: 85px; } }
     </style>
@@ -93,16 +120,19 @@
 <body>
     <div class="stars" id="starfield"></div>
 
-    <header class="text-center pt-4">
+    <header class="text-center pt-4 transition-opacity duration-300">
         <p class="text-primary-400 text-[9px] font-bold tracking-[0.4em] uppercase opacity-70 mb-1">Resource Commune</p>
         <h1 class="text-2xl font-extralight tracking-wider text-white flex items-center justify-center gap-2">
             <span class="animate-float">🌙</span> 深夜书房
         </h1>
     </header>
 
-    <main class="glass">
+    <main class="glass relative">
+        <button class="focus-toggle" id="focusToggle">🌙 沉浸</button>
+        
         <div id="vinyl" class="vinyl"></div>
-        <p id="quote" class="quote">轻触播放，进入梦乡</p>
+        <p id="quote" class="quote animate-fade-in">轻触播放，进入梦乡</p>
+        <p id="bookTag" class="book-tag">—— 《瓦尔登湖》梭罗</p>
         
         <button id="playBtn" class="play-btn">▶</button>
 
@@ -118,25 +148,28 @@
             <button class="mode-btn" onclick="setMode('rain')">🌧️ 雨声</button>
         </div>
 
+        <!-- 新增：深夜随笔 -->
+        <textarea id="notes" class="notes-area" placeholder="📝 此刻的灵感或读书笔记... (自动保存)"></textarea>
+
         <div class="timer-box">
             <div class="timer-display" id="timerDisplay">00:00</div>
             <div class="timer-controls">
                 <button class="timer-btn" onclick="setTimer(15)">15分</button>
                 <button class="timer-btn" onclick="setTimer(30)">30分</button>
                 <button class="timer-btn" onclick="setTimer(60)">60分</button>
-                <button class="timer-btn" id="timerStopBtn" onclick="stopTimer()">停止</button>
+                <button class="timer-btn" onclick="stopTimer()">停止</button>
             </div>
         </div>
     </main>
 
-    <nav class="grid grid-cols-2 gap-3 w-full max-w-[360px] mt-4">
+    <nav class="grid grid-cols-2 gap-3 w-full max-w-[360px] mt-4 transition-opacity duration-300">
         <button onclick="openTG('https://t.me/cnudo')" class="nav-btn text-primary-400">🔍 索引站</button>
         <button onclick="openTG('https://t.me/cxsns')" class="nav-btn text-white">🕹️ 软件站</button>
         <button onclick="openTG('https://t.me/sosotune')" class="nav-btn text-emerald-400">🎵 音乐库</button>
         <button onclick="openTG('https://t.me/soso_Group')" class="nav-btn text-slate-400">💬 交流群</button>
     </nav>
 
-    <footer class="text-center pb-2">
+    <footer class="text-center pb-2 transition-opacity duration-300">
         <p class="text-[8px] tracking-widest opacity-30 uppercase">资源公社 · @mr518</p>
     </footer>
 
@@ -145,22 +178,32 @@
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.ready(); tg.expand?.(); }
 
-        // 2. 音频引擎核心
+        // 2. 经典文库数据 (可自由替换/添加)
+        const LIBRARY = [
+            { quote: "我步入丛林，因为我希望生活得有意义。", author: "梭罗", book: "《瓦尔登湖》" },
+            { quote: "万物皆有裂痕，那是光照进来的地方。", author: "莱昂纳德·科恩", book: "《颂歌》" },
+            { quote: "且视他人之疑目如盏盏鬼火，大胆去走你的夜路。", author: "史铁生", book: "《病隙碎笔》" },
+            { quote: "世界上只有一种真正的英雄主义，那就是在认清生活真相后依然热爱生活。", author: "罗曼·罗兰", book: "《米开朗基罗传》" },
+            { quote: "黑夜给了我黑色的眼睛，我却用它寻找光明。", author: "顾城", book: "《一代人》" },
+            { quote: "人生如逆旅，我亦是行人。", author: "苏轼", book: "《临江仙》" },
+            { quote: "心静，则万物莫不自得。", author: "程颢", book: "《秋日偶成》" },
+            { quote: "读书不是为了雄辩和驳斥，也不是为了轻信和盲从，而是为了思考和权衡。", author: "培根", book: "《论读书》" }
+        ];
+
+        // 3. 音频引擎核心 (保留稳定算法)
         let ctx, masterGain, delayNode, feedbackGain;
         let isPlaying = false, currentMode = 'piano';
         let timerSeconds = 0, timerInterval = null;
-        let scheduleTimer = null;
-        let nextNoteTime = 0;
-        let noteQueue = [];
+        let scheduleTimer = null, nextNoteTime = 0;
 
         const scales = {
-            piano: [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25], // C4 大调五声
+            piano: [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25],
             guzheng: [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25],
             violin: [261.63, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25, 783.99],
             rain: []
         };
 
-        const quotes = {
+        const modeQuotes = {
             piano: "“琴键轻落，月光入怀。”",
             guzheng: "“弦音如水，心自澄明。”",
             violin: "“悠扬旋律，抚平疲惫。”",
@@ -172,13 +215,8 @@
                 ctx = new (window.AudioContext || window.webkitAudioContext)();
                 masterGain = ctx.createGain();
                 masterGain.gain.value = 0.6;
-
-                // 创建环境混响/延迟效果
-                delayNode = ctx.createDelay();
-                delayNode.delayTime.value = 0.4;
-                feedbackGain = ctx.createGain();
-                feedbackGain.gain.value = 0.5;
-
+                delayNode = ctx.createDelay(); delayNode.delayTime.value = 0.4;
+                feedbackGain = ctx.createGain(); feedbackGain.gain.value = 0.5;
                 masterGain.connect(ctx.destination);
                 masterGain.connect(delayNode);
                 delayNode.connect(feedbackGain);
@@ -192,59 +230,31 @@
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             const filter = ctx.createBiquadFilter();
-
-            osc.type = type;
-            osc.frequency.value = freq;
-
-            filter.type = 'lowpass';
-            filter.frequency.value = type === 'violin' ? 2000 : 1200;
-            filter.Q.value = 1;
-
-            // 包络控制
+            osc.type = type; osc.frequency.value = freq;
+            filter.type = 'lowpass'; filter.frequency.value = type === 'violin' ? 2000 : 1200; filter.Q.value = 1;
             gain.gain.setValueAtTime(0, time);
             gain.gain.linearRampToValueAtTime(type === 'violin' ? 0.3 : 0.5, time + 0.05);
             gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
-
-            osc.connect(filter);
-            filter.connect(gain);
-            gain.connect(masterGain);
-
-            osc.start(time);
-            osc.stop(time + duration + 0.1);
+            osc.connect(filter); filter.connect(gain); gain.connect(masterGain);
+            osc.start(time); osc.stop(time + duration + 0.1);
         }
 
         function playRain(time) {
-            // 简易雨声合成 (滤波白噪)
             const bufferSize = ctx.sampleRate * 2;
             const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
             const data = buffer.getChannelData(0);
             for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-
-            const src = ctx.createBufferSource();
-            src.buffer = buffer;
-            src.loop = true;
-
-            const filter = ctx.createBiquadFilter();
-            filter.type = 'lowpass';
-            filter.frequency.value = 800;
-
-            const gain = ctx.createGain();
-            gain.gain.setValueAtTime(0.4, time);
-            
-            src.connect(filter);
-            filter.connect(gain);
-            gain.connect(masterGain);
-            src.start(time);
-            src.stop(time + 0.2); // 短片段循环触发
-            return src;
+            const src = ctx.createBufferSource(); src.buffer = buffer; src.loop = true;
+            const filter = ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 800;
+            const gain = ctx.createGain(); gain.gain.setValueAtTime(0.4, time);
+            src.connect(filter); filter.connect(gain); gain.connect(masterGain);
+            src.start(time); src.stop(time + 0.2);
         }
 
         function scheduler() {
             while (nextNoteTime < ctx.currentTime + 0.1) {
-                if (currentMode === 'rain') {
-                    playRain(nextNoteTime);
-                    nextNoteTime += 0.1;
-                } else {
+                if (currentMode === 'rain') { playRain(nextNoteTime); nextNoteTime += 0.1; }
+                else {
                     const scale = scales[currentMode];
                     const freq = scale[Math.floor(Math.random() * scale.length)];
                     const type = currentMode === 'piano' ? 'triangle' : currentMode === 'guzheng' ? 'sine' : 'sawtooth';
@@ -259,13 +269,11 @@
         function togglePlay() {
             initAudio();
             if (isPlaying) {
-                isPlaying = false;
-                clearTimeout(scheduleTimer);
+                isPlaying = false; clearTimeout(scheduleTimer);
                 document.getElementById('playBtn').textContent = '▶';
                 document.getElementById('vinyl').classList.remove('playing');
             } else {
-                isPlaying = true;
-                nextNoteTime = ctx.currentTime + 0.1;
+                isPlaying = true; nextNoteTime = ctx.currentTime + 0.1;
                 scheduler();
                 document.getElementById('playBtn').textContent = '⏸';
                 document.getElementById('vinyl').classList.add('playing');
@@ -276,42 +284,28 @@
             currentMode = mode;
             document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
-            document.getElementById('quote').textContent = quotes[mode];
-            // 热切换时重启调度
-            if (isPlaying) {
-                clearTimeout(scheduleTimer);
-                nextNoteTime = ctx.currentTime + 0.05;
-                scheduler();
-            }
+            document.getElementById('quote').textContent = modeQuotes[mode];
+            if (isPlaying) { clearTimeout(scheduleTimer); nextNoteTime = ctx.currentTime + 0.05; scheduler(); }
         }
 
         function setTimer(mins) {
             stopTimer();
-            timerSeconds = mins * 60;
-            updateTimerDisplay();
+            timerSeconds = mins * 60; updateTimerDisplay();
             document.querySelectorAll('.timer-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
             timerInterval = setInterval(() => {
-                timerSeconds--;
-                updateTimerDisplay();
-                if (timerSeconds <= 0) {
-                    stopAll();
-                }
+                timerSeconds--; updateTimerDisplay();
+                if (timerSeconds <= 0) stopAll();
             }, 1000);
         }
 
         function stopTimer() {
             clearInterval(timerInterval);
             document.querySelectorAll('.timer-btn').forEach(b => b.classList.remove('active'));
-            timerSeconds = 0;
-            updateTimerDisplay();
+            timerSeconds = 0; updateTimerDisplay();
         }
 
-        function stopAll() {
-            stopTimer();
-            if (isPlaying) togglePlay();
-        }
-
+        function stopAll() { stopTimer(); if (isPlaying) togglePlay(); }
         function updateTimerDisplay() {
             const m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
             const s = (timerSeconds % 60).toString().padStart(2, '0');
@@ -323,17 +317,42 @@
             else window.open(url, '_blank');
         }
 
+        // 4. 书房功能逻辑
+        function showRandomQuote() {
+            const item = LIBRARY[Math.floor(Math.random() * LIBRARY.length)];
+            const qEl = document.getElementById('quote');
+            const bEl = document.getElementById('bookTag');
+            qEl.style.opacity = 0;
+            setTimeout(() => {
+                qEl.textContent = `“${item.quote}”`;
+                bEl.textContent = `—— 《${item.book}》${item.author}`;
+                qEl.style.opacity = 1;
+            }, 300);
+        }
+
         // 事件绑定
         document.getElementById('playBtn').addEventListener('click', togglePlay);
         document.getElementById('volumeSlider').addEventListener('input', (e) => {
             if (masterGain) masterGain.gain.value = parseFloat(e.target.value);
         });
+        document.getElementById('focusToggle').addEventListener('click', () => {
+            document.body.classList.toggle('focus-mode');
+            const btn = document.getElementById('focusToggle');
+            btn.textContent = document.body.classList.contains('focus-mode') ? '🌞 退出' : '🌙 沉浸';
+        });
+        
+        // 点击金句切换下一句
+        document.getElementById('quote').addEventListener('click', showRandomQuote);
+        
+        // 便签自动保存
+        const notesEl = document.getElementById('notes');
+        notesEl.value = localStorage.getItem('midnight-notes') || '';
+        notesEl.addEventListener('input', () => localStorage.setItem('midnight-notes', notesEl.value));
 
         // 星空背景
         const starfield = document.getElementById('starfield');
         for(let i=0; i<40; i++) {
-            const s = document.createElement('div');
-            s.className = 'star';
+            const s = document.createElement('div'); s.className = 'star';
             s.style.cssText = `left:${Math.random()*100}%; top:${Math.random()*100}%; animation-delay:${Math.random()*4}s; opacity:${Math.random()*0.6+0.2}`;
             starfield.appendChild(s);
         }
