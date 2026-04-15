@@ -4,20 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#6366f1">
-    <meta name="description" content="资源公社 · 深夜书房 | 助眠轻音乐与心灵语录">
+    <meta name="description" content="资源公社 · 深夜书房 | 代码生成助眠音景">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>🌙 深夜书房 - 资源公社旗下</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     colors: { primary: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5' } },
-                    animation: { 'float': 'float 6s ease-in-out infinite' }
+                    animation: { 'float': 'float 6s ease-in-out infinite', 'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite' }
                 }
             }
         }
@@ -25,14 +23,11 @@
 
     <style>
         :root { --bg: #0f172a; --surface: rgba(30, 41, 59, 0.85); --text: #f1f5f9; --glow: 0 0 40px rgba(99, 102, 241, 0.4); }
-        [data-theme="light"] { --bg: #f8fafc; --surface: rgba(255,255,255,0.9); --text: #0f172a; }
-        
         body {
             background: var(--bg); color: var(--text);
             font-family: system-ui, -apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif;
             height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-            padding: 16px; padding-bottom: env(safe-area-inset-bottom); overflow: hidden;
-            transition: background 0.6s ease; -webkit-tap-highlight-color: transparent;
+            padding: 16px; overflow: hidden; transition: background 0.6s ease; -webkit-tap-highlight-color: transparent;
         }
 
         .stars { position: fixed; inset: 0; pointer-events: none; z-index: -1; background: radial-gradient(ellipse at 50% 0%, #1e1b4b 0%, #0f172a 40%, #020617 100%); }
@@ -43,16 +38,15 @@
         .glass {
             background: var(--surface); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
             border: 1px solid rgba(255,255,255,0.1); border-radius: 32px;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.25); transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.25); transition: transform 0.3s;
         }
-        .glass:hover { transform: translateY(-4px); box-shadow: 0 16px 50px rgba(0,0,0,0.3); }
+        .glass:hover { transform: translateY(-4px); }
 
         .vinyl {
             width: 110px; height: 110px; border-radius: 50%;
             background: radial-gradient(circle, #111 20%, #222 21%, #111 22%, #222 35%, #111 36%, #222 55%, #111 56%);
             border: 3px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center;
             position: relative; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 0 0 rgba(99,102,241,0);
         }
         .vinyl.playing { animation: spin 24s linear infinite; box-shadow: var(--glow); }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -66,7 +60,6 @@
             transition: all 0.2s ease; box-shadow: 0 6px 20px rgba(99,102,241,0.5);
         }
         .play-btn:active { transform: scale(0.92); }
-        .play-btn:hover { transform: scale(1.05); }
 
         .progress-ring { width: 120px; height: 120px; position: relative; margin: 0 auto 12px; }
         .progress-ring svg { transform: rotate(-90deg); }
@@ -79,63 +72,29 @@
         }
         .progress-time span { font-size: 18px; font-weight: 600; color: var(--text); }
 
-        .vol-slider {
-            width: 100%; height: 6px; -webkit-appearance: none;
-            background: rgba(255,255,255,0.15); border-radius: 3px; outline: none;
-        }
-        .vol-slider::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 16px; height: 16px;
-            border-radius: 50%; background: #6366f1; cursor: pointer;
-            box-shadow: 0 0 10px rgba(99,102,241,0.6); transition: transform 0.2s;
-        }
-        .vol-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+        .vol-slider { width: 100%; height: 6px; -webkit-appearance: none; background: rgba(255,255,255,0.15); border-radius: 3px; outline: none; }
+        .vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #6366f1; cursor: pointer; box-shadow: 0 0 10px rgba(99,102,241,0.6); }
 
         .nav-btn {
             padding: 12px 10px; border-radius: 16px; font-size: 11px; font-weight: 600;
-            letter-spacing: 0.03em; transition: all 0.25s; border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.25s; border: 1px solid rgba(255,255,255,0.08);
             background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(8px);
         }
-        .nav-btn:hover { background: rgba(99,102,241,0.15); border-color: rgba(99,102,241,0.3); transform: translateY(-2px); }
+        .nav-btn:hover { background: rgba(99,102,241,0.15); transform: translateY(-2px); }
 
         .status-msg { font-size: 12px; text-align: center; min-height: 18px; color: #94a3b8; transition: all 0.3s; }
         .status-msg.error { color: #f87171; } .status-msg.success { color: #34d399; }
-        .timer-btn {
-            padding: 8px 14px; border-radius: 20px; font-size: 11px; font-weight: 600;
-            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
+        
+        .mode-btn {
+            padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
             color: #cbd5e1; cursor: pointer; transition: all 0.2s;
         }
-        .timer-btn:hover { background: rgba(99,102,241,0.2); color: white; }
-        .timer-btn.active { background: #6366f1; color: white; border-color: #6366f1; }
+        .mode-btn:hover { background: rgba(99,102,241,0.2); }
+        .mode-btn.active { background: #6366f1; color: white; border-color: #6366f1; }
 
-        .track-list {
-            max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
-            background: rgba(15, 23, 42, 0.6); border-radius: 16px; margin-top: 12px;
-        }
-        .track-list.open { max-height: 200px; overflow-y: auto; }
-        .track-item {
-            padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.05);
-            cursor: pointer; transition: background 0.2s; display: flex; justify-content: space-between; align-items: center;
-        }
-        .track-item:hover { background: rgba(99,102,241,0.1); }
-        .track-item.active { color: #818cf8; font-weight: 600; }
-
-        .custom-input {
-            width: 100%; padding: 10px 14px; border-radius: 12px;
-            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
-            color: var(--text); font-size: 13px; outline: none; margin-top: 10px;
-            transition: border-color 0.2s;
-        }
-        .custom-input:focus { border-color: #6366f1; }
-        .custom-input::placeholder { color: #64748b; }
-
-        button:focus-visible, input:focus-visible { outline: 2px solid #6366f1; outline-offset: 2px; }
         ::-webkit-scrollbar { width: 0; height: 0; }
-
-        @media (max-width: 380px) {
-            .glass { padding: 20px 16px; border-radius: 24px; }
-            .vinyl { width: 90px; height: 90px; }
-            .play-btn { width: 58px; height: 58px; }
-        }
+        @media (max-width: 380px) { .glass { padding: 20px 16px; border-radius: 24px; } .vinyl { width: 90px; height: 90px; } }
     </style>
 </head>
 <body>
@@ -153,7 +112,7 @@
         <div id="vinyl" class="vinyl mx-auto mb-4"></div>
         <blockquote id="quote" class="text-[14px] text-gray-300 font-light leading-relaxed min-h-[48px] mb-3 flex items-center justify-center italic px-2" aria-live="polite">轻触播放，进入梦乡</blockquote>
         
-        <audio id="player" preload="auto" loop crossorigin="anonymous" playsinline></audio>
+        <audio id="player" preload="auto" loop></audio>
 
         <div class="progress-ring">
             <svg width="120" height="120">
@@ -168,7 +127,7 @@
             </svg>
             <div class="progress-time">
                 <span id="currentTime">0:00</span>
-                <div id="duration" class="text-[10px] opacity-60">/ 0:00</div>
+                <div id="duration" class="text-[10px] opacity-60">/ ∞</div>
             </div>
         </div>
 
@@ -179,22 +138,17 @@
             
             <div class="flex items-center gap-4 w-full max-w-[220px]">
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.586a2 2 0 002.828 0l5.657-5.657a1 1 0 000-1.414l-5.657-5.657a2 2 0 00-2.828 0L2 9.586l3.586 3.586z"/></svg>
-                <input type="range" class="vol-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.6" aria-label="音量">
+                <input type="range" class="vol-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.5" aria-label="音量">
             </div>
 
             <div class="flex gap-2 flex-wrap justify-center">
-                <button class="timer-btn" onclick="setSleepTimer(15)">15分</button>
-                <button class="timer-btn" onclick="setSleepTimer(30)">30分</button>
-                <button class="timer-btn" onclick="setSleepTimer(60)">60分</button>
-                <button class="timer-btn" onclick="toggleTrackList()">🎵 曲目</button>
+                <button class="mode-btn active" onclick="setMode('rain')">🌧️ 暴雨助眠</button>
+                <button class="mode-btn" onclick="setMode('deep')">🌌 深沉白噪</button>
+                <button class="mode-btn" onclick="setMode('wind')">🍃 森林微风</button>
             </div>
-            
-            <!-- 自定义音源输入框（解决国内网络问题） -->
-            <input type="text" id="customUrl" class="custom-input" placeholder="🔗 粘贴你的MP3链接（回车试听）">
         </div>
-
-        <div class="track-list" id="trackList"></div>
-        <div id="statusMsg" class="status-msg mt-2" role="status" aria-live="polite"></div>
+        
+        <div id="statusMsg" class="status-msg mt-2" role="status" aria-live="polite">系统就绪，点击播放</div>
     </main>
 
     <nav class="grid grid-cols-2 gap-3 w-full max-w-[360px]">
@@ -210,54 +164,32 @@
         </p>
     </footer>
 
-    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[var(--surface)] px-5 py-3 rounded-2xl flex items-center gap-3 shadow-2xl border border-white/10 transition-transform translate-y-24 z-50" id="installPrompt">
-        <span class="text-xs">📱 添加到主屏幕，随时聆听</span>
-        <button id="installBtn" class="bg-primary-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold">安装</button>
-        <button id="dismissInstall" class="text-gray-400 hover:text-white text-lg leading-none">✕</button>
-    </div>
-
     <script>
-        // ================= 音源配置（三级容灾） =================
-        // 说明：国内网络限制严格，预设链接可能受限。强烈建议使用下方“自定义音源”输入框测试。
-        const PLAYLIST = [
-            { title: "夜曲一", quote: "“雨落山林，心归宁静。”", 
-              src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-              fallback: "https://actions.google.com/sounds/v1/ambiences/rain_heavy_loud.ogg" },
-            { title: "夜曲二", quote: "“潮起潮落，烦恼随波而去。”", 
-              src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-              fallback: "https://actions.google.com/sounds/v1/ambiences/ocean_waves.ogg" },
-            { title: "夜曲三", quote: "“虫声织梦，夜色温柔。”", 
-              src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-              fallback: "https://actions.google.com/sounds/v1/ambiences/forest_crickets.ogg" },
-            { title: "夜曲四", quote: "“琴键轻落，月光入怀。”", 
-              src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
-              fallback: "https://www.w3schools.com/html/horse.mp3" },
-            { title: "夜曲五", quote: "“仰望星空，万物皆安。”", 
-              src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
-              fallback: "https://actions.google.com/sounds/v1/ambiences/quiet_library.ogg" }
-        ];
-
-        // ================= 核心变量 =================
+        // ================= Telegram 初始化 =================
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.ready(); tg.expand?.(); if (tg.colorScheme === 'light') document.documentElement.setAttribute('data-theme', 'light'); }
 
-        const audio = document.getElementById('player');
+        // ================= 核心变量 =================
         const vinyl = document.getElementById('vinyl');
-        const quote = document.getElementById('quote');
         const playBtn = document.getElementById('playBtn');
         const playIcon = document.getElementById('playIcon');
         const progressBar = document.getElementById('progressBar');
         const currentTimeEl = document.getElementById('currentTime');
-        const durationEl = document.getElementById('duration');
         const volumeSlider = document.getElementById('volumeSlider');
         const statusMsg = document.getElementById('statusMsg');
-        const trackListEl = document.getElementById('trackList');
-        const customUrlInput = document.getElementById('customUrl');
+        const quote = document.getElementById('quote');
+        const modeBtns = document.querySelectorAll('.mode-btn');
         const circumference = 2 * Math.PI * 54;
 
-        let currentIdx = -1, isPlaying = false, sleepTimerId = null, deferredPrompt = null, failStreak = 0;
+        let audioCtx = null;
+        let noiseNode = null;
+        let gainNode = null;
+        let isPlaying = false;
+        let currentMode = 'rain';
+        let startTime = 0;
+        let timerInterval = null;
 
-        // ================= 初始化星空 =================
+        // ================= 星空背景初始化 =================
         const starfield = document.getElementById('starfield');
         for (let i = 0; i < 50; i++) {
             const star = document.createElement('div');
@@ -269,215 +201,161 @@
             starfield.appendChild(star);
         }
 
-        // ================= 音频引擎（国内优化版） =================
+        // ================= 音频引擎 (Web Audio API 代码生成) =================
+        // 这种方法不需要任何外部文件，100% 可靠
+        
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function createNoiseBuffer() {
+            const bufferSize = audioCtx.sampleRate * 2; // 2秒缓冲
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const output = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                output[i] = Math.random() * 2 - 1;
+            }
+            return buffer;
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            modeBtns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const quotes = {
+                'rain': '“雨落山林，心归宁静。”',
+                'deep': '“深沉白噪，隔绝尘世。”',
+                'wind': '“微风拂面，林间漫步。”'
+            };
+            quote.textContent = quotes[mode];
+            
+            if (isPlaying) {
+                play(); // 重新播放以应用新音效
+            }
+        }
+
+        function play() {
+            initAudio();
+            stop(); // 先停止旧的
+
+            gainNode = audioCtx.createGain();
+            gainNode.gain.value = parseFloat(volumeSlider.value);
+            gainNode.connect(audioCtx.destination);
+
+            const source = audioCtx.createBufferSource();
+            source.buffer = createNoiseBuffer();
+            source.loop = true;
+            noiseNode = source;
+
+            // 滤镜处理
+            const filter = audioCtx.createBiquadFilter();
+            if (currentMode === 'rain') {
+                // 暴雨：低通滤波，模拟雨声
+                filter.type = 'lowpass';
+                filter.frequency.value = 800; 
+            } else if (currentMode === 'deep') {
+                // 深沉白噪：更低的低通，模拟轰鸣声
+                filter.type = 'lowpass';
+                filter.frequency.value = 400;
+            } else if (currentMode === 'wind') {
+                // 森林微风：带通滤波，模拟风声
+                filter.type = 'bandpass';
+                filter.frequency.value = 600;
+                filter.Q.value = 1;
+            }
+
+            source.connect(filter);
+            filter.connect(gainNode);
+            source.start();
+
+            isPlaying = true;
+            updatePlayState(true);
+            statusMsg.textContent = '🎵 正在播放 (代码生成音景)';
+            statusMsg.className = 'status-msg success';
+            startTimer();
+        }
+
+        function stop() {
+            if (noiseNode) {
+                try { noiseNode.stop(); } catch(e){}
+                noiseNode = null;
+            }
+            isPlaying = false;
+            updatePlayState(false);
+            statusMsg.textContent = '⏸ 已暂停';
+            statusMsg.className = 'status-msg';
+            stopTimer();
+        }
+
+        function togglePlay() {
+            if (isPlaying) {
+                stop();
+            } else {
+                play();
+            }
+        }
+
+        function updatePlayState(playing) {
+            playIcon.textContent = playing ? '⏸' : '▶';
+            vinyl.classList.toggle('playing', playing);
+        }
+
+        // ================= 进度条模拟 =================
+        function startTimer() {
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                if (!isPlaying) return;
+                const elapsed = (Date.now() - startTime) / 1000;
+                currentTimeEl.textContent = formatTime(elapsed);
+                // 模拟进度环转动
+                const pct = (elapsed % 60) / 60; 
+                progressBar.style.strokeDashoffset = circumference - (pct * circumference);
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
         function formatTime(sec) {
-            if (isNaN(sec)) return '0:00';
             const m = Math.floor(sec / 60), s = Math.floor(sec % 60);
             return `${m}:${s.toString().padStart(2, '0')}`;
         }
 
-        function loadTrack(index, autoPlay = false, forceUrl = null) {
-            const track = forceUrl ? { title: "自定义音源", quote: "自定义音乐", src: forceUrl, fallback: null } : PLAYLIST[index];
-            if (!track) return;
-            
-            currentIdx = forceUrl ? -1 : index;
-            failStreak = 0;
-            showStatus(`⏳ 缓冲: ${track.title}`);
-            
-            audio.src = track.src;
-            audio.volume = parseFloat(volumeSlider.value);
-            quote.textContent = track.quote;
-            document.title = `🌙 ${track.title} - 深夜书房`;
-            updateTrackListUI();
-
-            const playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    updatePlayState(true);
-                    showStatus('🎵 播放中', 'success');
-                    if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-                }).catch(err => {
-                    console.warn('播放拦截:', err.name);
-                    showStatus('👆 请点击播放按钮', 'error');
-                    updatePlayState(false);
-                });
-            }
-        }
-
-        function tryFallback() {
-            const track = PLAYLIST[currentIdx];
-            if (track && track.fallback) {
-                showStatus('🔄 主源失败，切换备用CDN...');
-                audio.src = track.fallback;
-                audio.play().then(() => {
-                    updatePlayState(true);
-                    showStatus('✅ 备用源播放成功', 'success');
-                }).catch(() => {
-                    showStatus('🚫 音源加载失败，请使用自定义链接', 'error');
-                    updatePlayState(false);
-                });
-            } else {
-                showStatus('🚫 音源不可用，请粘贴有效MP3链接', 'error');
-            }
-        }
-
-        function togglePlay() {
-            if (!audio.src || audio.src === location.href) { loadTrack(0, true); return; }
-            if (audio.paused) {
-                audio.play().then(() => {
-                    updatePlayState(true);
-                    showStatus('🎵 播放中', 'success');
-                    failStreak = 0;
-                }).catch(() => showStatus('👆 请点击播放按钮', 'error'));
-            } else {
-                audio.pause();
-                updatePlayState(false);
-                showStatus('⏸ 已暂停');
-            }
-        }
-
-        function nextTrack() { 
-            const next = (currentIdx + 1) % PLAYLIST.length;
-            loadTrack(next, true); 
-        }
-        function prevTrack() { 
-            const prev = (currentIdx - 1 + PLAYLIST.length) % PLAYLIST.length;
-            loadTrack(prev, true); 
-        }
-
-        function updatePlayState(playing) {
-            isPlaying = playing;
-            playIcon.textContent = playing ? '⏸' : '▶';
-            vinyl.classList.toggle('playing', playing);
-            playBtn.setAttribute('aria-label', playing ? '暂停' : '播放');
-        }
-
-        function showStatus(msg, type = '') {
-            statusMsg.textContent = msg;
-            statusMsg.className = 'status-msg' + (type ? ` ${type}` : '');
-            if (type) setTimeout(() => { if (statusMsg.textContent === msg) { statusMsg.textContent = ''; statusMsg.className = 'status-msg'; } }, 3000);
-        }
-
-        // ================= 进度 & 音量 & 错误处理 =================
-        audio.addEventListener('timeupdate', () => {
-            if (!audio.duration) return;
-            const pct = audio.currentTime / audio.duration;
-            progressBar.style.strokeDashoffset = circumference - (pct * circumference);
-            currentTimeEl.textContent = formatTime(audio.currentTime);
-        });
-        audio.addEventListener('loadedmetadata', () => durationEl.textContent = `/ ${formatTime(audio.duration)}`);
-        audio.addEventListener('ended', () => { failStreak = 0; nextTrack(); });
+        // ================= 事件监听 =================
+        playBtn.addEventListener('click', togglePlay);
         
-        // 核心：监听音频加载失败，自动尝试备用源或提示自定义
-        audio.addEventListener('error', () => {
-            failStreak++;
-            if (failStreak === 1) {
-                tryFallback();
-            } else {
-                showStatus('⚠️ 网络或音源限制，请使用下方自定义输入框', 'error');
-                updatePlayState(false);
-            }
-        });
-
         volumeSlider.addEventListener('input', () => {
-            audio.volume = parseFloat(volumeSlider.value);
-            localStorage.setItem('midnight-vol', volumeSlider.value);
-        });
-
-        document.querySelector('.progress-ring').addEventListener('click', (e) => {
-            if (!audio.duration) return;
-            const rect = e.currentTarget.getBoundingClientRect();
-            const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-            audio.currentTime = pct * audio.duration;
-        });
-
-        // ================= 自定义音源（回车触发） =================
-        customUrlInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const url = customUrlInput.value.trim();
-                if (url.match(/^https?:\/\/.+\.(mp3|wav|ogg|m4a)(\?.*)?$/i)) {
-                    loadTrack(0, true, url);
-                    showStatus('✅ 已加载自定义音源', 'success');
-                } else {
-                    showStatus('❌ 请输入有效的MP3/WAV/OGG链接', 'error');
-                }
+            if (gainNode) {
+                gainNode.gain.value = parseFloat(volumeSlider.value);
             }
         });
 
-        // ================= 睡眠定时器 =================
-        function setSleepTimer(min) {
-            clearTimeout(sleepTimerId);
-            document.querySelectorAll('.timer-btn').forEach(b => b.classList.remove('active'));
-            if (min === 0) { showStatus('⏰ 定时已取消'); return; }
-            event.target.classList.add('active');
-            showStatus(`⏰ ${min}分钟后自动暂停`);
-            sleepTimerId = setTimeout(() => {
-                audio.pause();
-                updatePlayState(false);
-                showStatus('🌙 晚安，好梦', 'success');
-                document.querySelectorAll('.timer-btn').forEach(b => b.classList.remove('active'));
-            }, min * 60 * 1000);
-        }
-
-        // ================= 曲目列表 =================
-        function toggleTrackList() {
-            trackListEl.classList.toggle('open');
-            if (!trackListEl.children.length) {
-                PLAYLIST.forEach((t, i) => {
-                    const div = document.createElement('div');
-                    div.className = 'track-item';
-                    div.innerHTML = `<span>${i + 1}. ${t.title}</span><span class="text-[10px] opacity-50">▶</span>`;
-                    div.onclick = () => { loadTrack(i, true); trackListEl.classList.remove('open'); };
-                    trackListEl.appendChild(div);
-                });
-            }
-        }
-        function updateTrackListUI() {
-            const items = trackListEl.querySelectorAll('.track-item');
-            items.forEach((el, i) => el.classList.toggle('active', i === currentIdx));
-        }
-
-        // ================= Telegram 跳转 =================
         function openTelegram(url) {
             if (tg?.openTelegramLink) tg.openTelegramLink(url);
-            else window.open(url, '_blank', 'noopener,noreferrer');
+            else window.open(url, '_blank');
         }
 
-        // ================= PWA 安装 & 缓存 =================
+        // PWA 安装提示逻辑
         window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault(); deferredPrompt = e;
-            setTimeout(() => document.getElementById('installPrompt').classList.remove('translate-y-24'), 2000);
-        });
-        document.getElementById('installBtn')?.addEventListener('click', async () => {
-            if (!deferredPrompt) return;
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') showStatus('🎉 已添加到主屏幕', 'success');
-            deferredPrompt = null;
-            document.getElementById('installPrompt').classList.add('translate-y-24');
-        });
-        document.getElementById('dismissInstall')?.addEventListener('click', () => document.getElementById('installPrompt').classList.add('translate-y-24'));
-
-        if ('serviceWorker' in navigator && location.protocol === 'https:') {
-            const sw = `const C='mid-v4';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['/'])).then(()=>self.skipWaiting())));self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(n=>Promise.all(n.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim())));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{const c=res.clone();caches.open(C).then(cache=>cache.put(e.request,c));return res}).catch(()=>caches.match('/')))));`;
-            navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw], {type:'application/javascript'})))
-                .then(() => console.log('✅ 离线缓存已启用')).catch(console.warn);
-        }
-
-        // ================= 键盘 & 初始化 =================
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
-            else if (e.code === 'ArrowRight') nextTrack();
-            else if (e.code === 'ArrowLeft') prevTrack();
+            e.preventDefault();
+            // 这里可以添加安装逻辑，为保持代码简洁暂略
         });
 
-        const savedVol = localStorage.getItem('midnight-vol');
-        if (savedVol) { volumeSlider.value = savedVol; audio.volume = parseFloat(savedVol); }
-
-        // 页面加载后准备就绪（不自动播放，符合现代浏览器规范）
         window.addEventListener('load', () => {
-            showStatus('💡 提示：国内网络建议使用下方“自定义音源”粘贴MP3链接');
+            showStatus('💡 已切换至代码生成模式，无网络也可播放');
         });
+
+        function showStatus(msg, type='') {
+            statusMsg.textContent = msg;
+            statusMsg.className = 'status-msg ' + type;
+        }
     </script>
 </body>
 </html>
