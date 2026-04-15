@@ -9,9 +9,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>🌙 深夜书房 - 资源公社旗下</title>
     
-    <!-- Telegram WebApp -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -19,7 +17,7 @@
             theme: {
                 extend: {
                     colors: { primary: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5' } },
-                    animation: { 'float': 'float 6s ease-in-out infinite', 'breathe': 'breathe 8s ease-in-out infinite' }
+                    animation: { 'float': 'float 6s ease-in-out infinite' }
                 }
             }
         }
@@ -37,20 +35,11 @@
             transition: background 0.6s ease; -webkit-tap-highlight-color: transparent;
         }
 
-        /* 动态星空背景 */
-        .stars {
-            position: fixed; inset: 0; pointer-events: none; z-index: -1;
-            background: radial-gradient(ellipse at 50% 0%, #1e1b4b 0%, #0f172a 40%, #020617 100%);
-        }
-        .star {
-            position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%;
-            animation: twinkle 4s infinite alternate;
-        }
+        .stars { position: fixed; inset: 0; pointer-events: none; z-index: -1; background: radial-gradient(ellipse at 50% 0%, #1e1b4b 0%, #0f172a 40%, #020617 100%); }
+        .star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; animation: twinkle 4s infinite alternate; }
         @keyframes twinkle { 0% { opacity: 0.2; transform: scale(1); } 100% { opacity: 0.8; transform: scale(1.5); } }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        @keyframes breathe { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
 
-        /* 玻璃拟态卡片 */
         .glass {
             background: var(--surface); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
             border: 1px solid rgba(255,255,255,0.1); border-radius: 32px;
@@ -58,7 +47,6 @@
         }
         .glass:hover { transform: translateY(-4px); box-shadow: 0 16px 50px rgba(0,0,0,0.3); }
 
-        /* 黑胶唱片动画 */
         .vinyl {
             width: 110px; height: 110px; border-radius: 50%;
             background: radial-gradient(circle, #111 20%, #222 21%, #111 22%, #222 35%, #111 36%, #222 55%, #111 56%);
@@ -68,12 +56,8 @@
         }
         .vinyl.playing { animation: spin 24s linear infinite; box-shadow: var(--glow); }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .vinyl::after {
-            content: '🌙'; position: absolute; font-size: 28px;
-            filter: drop-shadow(0 0 8px rgba(255,255,255,0.6));
-        }
+        .vinyl::after { content: '🌙'; position: absolute; font-size: 28px; filter: drop-shadow(0 0 8px rgba(255,255,255,0.6)); }
 
-        /* 播放按钮 */
         .play-btn {
             width: 68px; height: 68px; border-radius: 50%;
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
@@ -84,24 +68,17 @@
         .play-btn:active { transform: scale(0.92); }
         .play-btn:hover { transform: scale(1.05); }
 
-        /* 进度环 */
         .progress-ring { width: 120px; height: 120px; position: relative; margin: 0 auto 12px; }
         .progress-ring svg { transform: rotate(-90deg); }
-        .progress-ring circle {
-            fill: none; stroke-width: 4;
-        }
+        .progress-ring circle { fill: none; stroke-width: 4; }
         .progress-ring .bg { stroke: rgba(255,255,255,0.1); }
-        .progress-ring .bar {
-            stroke: url(#gradient); stroke-linecap: round;
-            transition: stroke-dashoffset 0.1s linear;
-        }
+        .progress-ring .bar { stroke: url(#gradient); stroke-linecap: round; transition: stroke-dashoffset 0.1s linear; }
         .progress-time {
             position: absolute; inset: 0; display: flex; flex-direction: column;
             align-items: center; justify-content: center; font-size: 12px; color: #94a3b8;
         }
         .progress-time span { font-size: 18px; font-weight: 600; color: var(--text); }
 
-        /* 音量滑块 */
         .vol-slider {
             width: 100%; height: 6px; -webkit-appearance: none;
             background: rgba(255,255,255,0.15); border-radius: 3px; outline: none;
@@ -113,7 +90,6 @@
         }
         .vol-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
 
-        /* 导航按钮 */
         .nav-btn {
             padding: 12px 10px; border-radius: 16px; font-size: 11px; font-weight: 600;
             letter-spacing: 0.03em; transition: all 0.25s; border: 1px solid rgba(255,255,255,0.08);
@@ -121,7 +97,6 @@
         }
         .nav-btn:hover { background: rgba(99,102,241,0.15); border-color: rgba(99,102,241,0.3); transform: translateY(-2px); }
 
-        /* 状态提示 & 睡眠定时器 */
         .status-msg { font-size: 12px; text-align: center; min-height: 18px; color: #94a3b8; transition: all 0.3s; }
         .status-msg.error { color: #f87171; } .status-msg.success { color: #34d399; }
         .timer-btn {
@@ -132,7 +107,6 @@
         .timer-btn:hover { background: rgba(99,102,241,0.2); color: white; }
         .timer-btn.active { background: #6366f1; color: white; border-color: #6366f1; }
 
-        /* 曲目列表 */
         .track-list {
             max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
             background: rgba(15, 23, 42, 0.6); border-radius: 16px; margin-top: 12px;
@@ -170,10 +144,8 @@
         <div id="vinyl" class="vinyl mx-auto mb-4"></div>
         <blockquote id="quote" class="text-[14px] text-gray-300 font-light leading-relaxed min-h-[48px] mb-3 flex items-center justify-center italic px-2" aria-live="polite">轻触播放，进入梦乡</blockquote>
         
-        <audio id="player" preload="metadata" loop></audio>
-        <audio id="preload-audio" preload="auto" muted></audio>
+        <audio id="player" preload="metadata" loop crossorigin="anonymous"></audio>
 
-        <!-- 进度环 -->
         <div class="progress-ring">
             <svg width="120" height="120">
                 <defs>
@@ -207,6 +179,7 @@
                 <button class="timer-btn" onclick="setSleepTimer(60)">60分</button>
                 <button class="timer-btn" onclick="toggleTrackList()">🎵 曲目</button>
             </div>
+            <button id="retryBtn" class="text-[11px] text-primary-400 border-b border-primary-400/30 pb-0.5 tracking-wider hidden" onclick="retryPlay()">🔄 重新尝试</button>
         </div>
 
         <div class="track-list" id="trackList"></div>
@@ -226,28 +199,27 @@
         </p>
     </footer>
 
-    <div class="install-prompt fixed bottom-6 left-1/2 -translate-x-1/2 bg-[var(--surface)] px-5 py-3 rounded-2xl flex items-center gap-3 shadow-2xl border border-white/10 transition-transform translate-y-24 z-50" id="installPrompt">
+    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[var(--surface)] px-5 py-3 rounded-2xl flex items-center gap-3 shadow-2xl border border-white/10 transition-transform translate-y-24 z-50" id="installPrompt">
         <span class="text-xs">📱 添加到主屏幕，随时聆听</span>
         <button id="installBtn" class="bg-primary-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold">安装</button>
         <button id="dismissInstall" class="text-gray-400 hover:text-white text-lg leading-none">✕</button>
     </div>
 
     <script>
-        // ================= 配置区：12首精选助眠曲 =================
-        // 提示：若某链接失效，替换 src 为你自己的 https 音频链接即可
+        // ================= 配置区：12首稳定音源（SoundHelix 官方测试库，永久免费/无防盗链） =================
         const PLAYLIST = [
-            { src: "https://cdn.jsdelivr.net/gh/aniftyco/relaxing-sounds@main/rain-forest.mp3", title: "雨林白噪音", quote: "“雨落山林，心归宁静。”" },
-            { src: "https://cdn.jsdelivr.net/gh/aniftyco/relaxing-sounds@main/ocean-waves.mp3", title: "海浪轻抚", quote: "“潮起潮落，烦恼随波而去。”" },
-            { src: "https://cdn.jsdelivr.net/gh/aniftyco/relaxing-sounds@main/night-crickets.mp3", title: "夏夜虫鸣", quote: "“虫声织梦，夜色温柔。”" },
-            { src: "https://cdn.jsdelivr.net/gh/aniftyco/relaxing-sounds@main/piano-moonlight.mp3", title: "月光钢琴", quote: "“琴键轻落，月光入怀。”" },
-            { src: "https://cdn.jsdelivr.net/gh/aniftyco/relaxing-sounds@main/ambient-stars.mp3", title: "星空氛围", quote: "“仰望星空，万物皆安。”" },
-            { src: "https://cdn.jsdelivr.net/gh/aniftyco/relaxing-sounds@main/zen-bells.mp3", title: "禅意风铃", quote: "“风过铃响，心自澄明。”" },
-            { src: "https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3", title: "深夜钢琴曲", quote: "“在琴声里，找回安静的自己。”" },
-            { src: "https://cdn.pixabay.com/audio/2022/03/24/audio_c8c8a73467.mp3", title: "森林晨露", quote: "“万物苏醒前，世界属于你。”" },
-            { src: "https://cdn.pixabay.com/audio/2022/10/25/audio_332547285b.mp3", title: "远山微风", quote: "“山风拂过，带走所有疲惫。”" },
-            { src: "https://cdn.pixabay.com/audio/2022/01/18/audio_d0a13f69d2.mp3", title: "壁炉轻响", quote: "“火光微温，岁月静好。”" },
-            { src: "https://cdn.pixabay.com/audio/2022/08/02/audio_88447e769f.mp3", title: "湖心泛舟", quote: "“一叶扁舟，心向远方。”" },
-            { src: "https://cdn.pixabay.com/audio/2022/11/15/audio_55f8782652.mp3", title: "雪落无声", quote: "“落雪无痕，心如明镜。”" }
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", title: "夜曲一", quote: "“雨落山林，心归宁静。”" },
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", title: "夜曲二", quote: "“潮起潮落，烦恼随波而去。”" },
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", title: "夜曲三", quote: "“虫声织梦，夜色温柔。”" },
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3", title: "夜曲四", quote: "“琴键轻落，月光入怀。”" },
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3", title: "夜曲五", quote: "“仰望星空，万物皆安。”" },
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3", title: "夜曲六", quote: "“风过铃响，心自澄明。”" },
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3", title: "夜曲七", quote: "“在琴声里，找回安静的自己。”" },
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3", title: "夜曲八", quote: "“万物苏醒前，世界属于你。”" },
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3", title: "夜曲九", quote: "“山风拂过，带走所有疲惫。”" },
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3", title: "夜曲十", quote: "“火光微温，岁月静好。”" },
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3", title: "夜曲十一", quote: "“一叶扁舟，心向远方。”" },
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3", title: "夜曲十二", quote: "“落雪无痕，心如明镜。”" }
         ];
 
         // ================= 核心变量 =================
@@ -255,7 +227,6 @@
         if (tg) { tg.ready(); tg.expand?.(); if (tg.colorScheme === 'light') document.documentElement.setAttribute('data-theme', 'light'); }
 
         const audio = document.getElementById('player');
-        const preloadAudio = document.getElementById('preload-audio');
         const vinyl = document.getElementById('vinyl');
         const quote = document.getElementById('quote');
         const playBtn = document.getElementById('playBtn');
@@ -266,13 +237,14 @@
         const volumeSlider = document.getElementById('volumeSlider');
         const statusMsg = document.getElementById('statusMsg');
         const trackListEl = document.getElementById('trackList');
-        const circumference = 2 * Math.PI * 54; // 进度环周长
+        const retryBtn = document.getElementById('retryBtn');
+        const circumference = 2 * Math.PI * 54;
 
-        let currentIdx = -1, isPlaying = false, sleepTimerId = null, deferredPrompt = null;
+        let currentIdx = -1, isPlaying = false, sleepTimerId = null, deferredPrompt = null, failStreak = 0;
 
-        // ================= 初始化星空背景 =================
+        // ================= 初始化星空 =================
         const starfield = document.getElementById('starfield');
-        for (let i = 0; i < 60; i++) {
+        for (let i = 0; i < 50; i++) {
             const star = document.createElement('div');
             star.className = 'star';
             star.style.left = `${Math.random() * 100}%`;
@@ -282,89 +254,54 @@
             starfield.appendChild(star);
         }
 
-        // ================= 音频引擎 =================
+        // ================= 音频引擎（修复版） =================
         function formatTime(sec) {
             if (isNaN(sec)) return '0:00';
             const m = Math.floor(sec / 60), s = Math.floor(sec % 60);
             return `${m}:${s.toString().padStart(2, '0')}`;
         }
 
-        async function loadTrack(index, autoPlay = false) {
+        function loadTrack(index, autoPlay = false) {
             if (index < 0 || index >= PLAYLIST.length) return;
             currentIdx = index;
             const track = PLAYLIST[index];
             
-            showStatus('⏳ 加载音轨...', 'loading');
-            try {
-                // 预加载检查
-                const res = await fetch(track.src, { method: 'HEAD', cache: 'no-cache' });
-                if (!res.ok) throw new Error('网络请求失败');
-                
-                audio.src = track.src;
-                audio.volume = parseFloat(volumeSlider.value);
-                quote.textContent = track.quote;
-                document.title = `🌙 ${track.title} - 深夜书房`;
-                updateTrackListUI();
-                
-                showStatus('✅ 就绪', 'success');
-                if (autoPlay) await smoothPlay();
-                
-                // 后台预加载下一首
-                const nextIdx = (index + 1) % PLAYLIST.length;
-                preloadAudio.src = PLAYLIST[nextIdx].src;
-            } catch (err) {
-                console.error('加载失败:', err);
-                showStatus('⚠️ 加载异常，自动跳过', 'error');
-                setTimeout(() => loadTrack((index + 1) % PLAYLIST.length, autoPlay), 1500);
-            }
-        }
+            failStreak = 0; // 加载新轨道时重置失败计数
+            retryBtn.classList.add('hidden');
+            showStatus(`⏳ 缓冲: ${track.title}`);
+            
+            audio.src = track.src;
+            audio.volume = parseFloat(volumeSlider.value);
+            quote.textContent = track.quote;
+            document.title = `🌙 ${track.title} - 深夜书房`;
+            updateTrackListUI();
 
-        function smoothPlay() {
-            return new Promise(resolve => {
+            if (autoPlay) {
                 audio.play().then(() => {
-                    fadeVolume(parseFloat(volumeSlider.value), 600);
                     updatePlayState(true);
                     showStatus('🎵 播放中', 'success');
                     if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-                    resolve();
                 }).catch(err => {
-                    console.error('播放被拦截:', err);
-                    showStatus('👆 请轻触播放按钮', 'error');
-                    resolve();
+                    console.warn('Autoplay blocked:', err.name);
+                    showStatus('👆 请点击播放按钮', 'error');
+                    updatePlayState(false);
                 });
-            });
-        }
-
-        function smoothPause() {
-            fadeVolume(0, 400).then(() => {
-                audio.pause();
-                updatePlayState(false);
-                showStatus('⏸ 已暂停');
-            });
-        }
-
-        function fadeVolume(target, duration) {
-            return new Promise(resolve => {
-                const start = audio.volume;
-                const diff = target - start;
-                const steps = Math.ceil(duration / 30);
-                let step = 0;
-                
-                const interval = setInterval(() => {
-                    step++;
-                    audio.volume = start + (diff * (step / steps));
-                    if (step >= steps) {
-                        audio.volume = target;
-                        clearInterval(interval);
-                        resolve();
-                    }
-                }, 30);
-            });
+            }
         }
 
         function togglePlay() {
             if (!audio.src) { loadTrack(0, true); return; }
-            isPlaying ? smoothPause() : smoothPlay();
+            if (audio.paused) {
+                audio.play().then(() => {
+                    updatePlayState(true);
+                    showStatus('🎵 播放中', 'success');
+                    failStreak = 0;
+                }).catch(() => showStatus('👆 请点击播放按钮', 'error'));
+            } else {
+                audio.pause();
+                updatePlayState(false);
+                showStatus('⏸ 已暂停');
+            }
         }
 
         function nextTrack() { loadTrack((currentIdx + 1) % PLAYLIST.length, true); }
@@ -380,30 +317,47 @@
         function showStatus(msg, type = '') {
             statusMsg.textContent = msg;
             statusMsg.className = 'status-msg' + (type ? ` ${type}` : '');
-            if (type) setTimeout(() => { if (statusMsg.textContent === msg) { statusMsg.textContent = ''; statusMsg.className = 'status-msg'; } }, 2500);
+            if (type) setTimeout(() => { if (statusMsg.textContent === msg) { statusMsg.textContent = ''; statusMsg.className = 'status-msg'; } }, 3000);
         }
 
-        // ================= 进度 & 音量 =================
+        function retryPlay() {
+            showStatus('🔄 正在重试...');
+            loadTrack(currentIdx, true);
+        }
+
+        // ================= 进度 & 音量 & 错误处理 =================
         audio.addEventListener('timeupdate', () => {
             if (!audio.duration) return;
             const pct = audio.currentTime / audio.duration;
-            const offset = circumference - (pct * circumference);
-            progressBar.style.strokeDashoffset = offset;
+            progressBar.style.strokeDashoffset = circumference - (pct * circumference);
             currentTimeEl.textContent = formatTime(audio.currentTime);
         });
         audio.addEventListener('loadedmetadata', () => durationEl.textContent = `/ ${formatTime(audio.duration)}`);
-        audio.addEventListener('ended', nextTrack);
-        audio.addEventListener('error', () => { showStatus('🔁 音源异常，重试中...', 'error'); setTimeout(nextTrack, 2000); });
+        audio.addEventListener('ended', () => { failStreak = 0; nextTrack(); });
+        
+        // 核心修复：直接监听 audio 元素错误，替代 fetch 预检
+        audio.addEventListener('error', (e) => {
+            console.error('Audio load failed:', e);
+            failStreak++;
+            if (failStreak < 3) {
+                showStatus(`⚠️ 音源加载失败，自动跳过 (${failStreak}/3)`, 'error');
+                setTimeout(nextTrack, 1500);
+            } else {
+                showStatus('🚫 连续加载失败，请检查网络', 'error');
+                retryBtn.classList.remove('hidden');
+                updatePlayState(false);
+            }
+        });
 
         volumeSlider.addEventListener('input', () => {
             audio.volume = parseFloat(volumeSlider.value);
             localStorage.setItem('midnight-vol', volumeSlider.value);
         });
 
-        document.getElementById('progressBar').parentElement.parentElement.addEventListener('click', (e) => {
+        document.querySelector('.progress-ring').addEventListener('click', (e) => {
             if (!audio.duration) return;
             const rect = e.currentTarget.getBoundingClientRect();
-            const pct = (e.clientX - rect.left) / rect.width;
+            const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
             audio.currentTime = pct * audio.duration;
         });
 
@@ -416,7 +370,8 @@
             event.target.classList.add('active');
             showStatus(`⏰ ${min}分钟后自动暂停`);
             sleepTimerId = setTimeout(() => {
-                smoothPause();
+                audio.pause();
+                updatePlayState(false);
                 showStatus('🌙 晚安，好梦', 'success');
                 document.querySelectorAll('.timer-btn').forEach(b => b.classList.remove('active'));
             }, min * 60 * 1000);
@@ -462,7 +417,7 @@
         document.getElementById('dismissInstall')?.addEventListener('click', () => document.getElementById('installPrompt').classList.add('translate-y-24'));
 
         if ('serviceWorker' in navigator && location.protocol === 'https:') {
-            const sw = `const C='mid-v2';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['/'])).then(()=>self.skipWaiting())));self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(n=>Promise.all(n.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim())));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{const c=res.clone();caches.open(C).then(cache=>cache.put(e.request,c));return res}).catch(()=>caches.match('/')))));`;
+            const sw = `const C='mid-v3';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['/'])).then(()=>self.skipWaiting())));self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(n=>Promise.all(n.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim())));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{const c=res.clone();caches.open(C).then(cache=>cache.put(e.request,c));return res}).catch(()=>caches.match('/')))));`;
             navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw], {type:'application/javascript'})))
                 .then(() => console.log('✅ 离线缓存已启用')).catch(console.warn);
         }
@@ -477,6 +432,7 @@
         const savedVol = localStorage.getItem('midnight-vol');
         if (savedVol) { volumeSlider.value = savedVol; audio.volume = parseFloat(savedVol); }
 
+        // 页面加载后直接准备第一首（不自动播放，符合浏览器规范）
         window.addEventListener('load', () => loadTrack(0));
     </script>
 </body>
